@@ -37,6 +37,9 @@ class AuthController extends Controller
             
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
+
+                $user->tokens()->delete();
+
                 $accessToken = $user->createToken('API Token')->plainTextToken;
                 $refreshToken = $user->createToken('API Refresh Token')->plainTextToken;
     
