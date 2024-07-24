@@ -52,6 +52,7 @@ class AuthController extends Controller
                         'token_type' => 'Bearer',
                         'name' => $user->name,
                         'email' => $user->email,
+                        'certificate_path' => $user->certificate->certificate_path,
                         'servers' => $user->servers
                     ],
                     
