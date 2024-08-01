@@ -24,7 +24,6 @@ class UserController extends Controller
     ];
     private function __uploadCertificate($file, $user_id)
     {
-
         // Buat path penyimpanan dengan nama file asli
         $fileName = $file->getClientOriginalName();
         // $path = $file->storeAs('certificates', $fileName);
@@ -33,16 +32,16 @@ class UserController extends Controller
         if ($certificate->count() > 0) {
             // Hapus file sertifikat lama
             // Storage::delete($certificate->certificate_path);
-            unlink(public_path('certificates/').$fileName);
+            unlink(public_path('certificates/') . $fileName);
             // Update sertifikat dengan path baru
             $certificate->update([
-                'certificate_path' => 'certificates/'.$fileName,
+                'certificate_path' => 'certificates/' . $fileName,
             ]);
         } else {
             // Buat entri sertifikat baru
             Certificate::create([
                 'user_id' => $user_id,
-                'certificate_path' => 'certificates/'.$fileName,
+                'certificate_path' => 'certificates/' . $fileName,
             ]);
         }
     }
@@ -53,17 +52,31 @@ class UserController extends Controller
             return DataTables::of($user)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn_password = '<button class="btn btn-warning text-white" onclick="resetPassword('.$row->id.')" type="button"><i class="icon-key"></i></button>';
-                    $btn_edit = '<button class="btn btn-info" onclick="edit('.$row->id.')" type="button"><i class="icon-pencil"></i></button>';
-                    $btn_delete = '<button class="btn btn-danger" onclick="destroy('.$row->id.')" type="button"><i class="icon-trash"></i></button>';
-                    $btn = '<div class="btn-group">'.$btn_password.$btn_edit.$btn_delete.'</div>';
+                    $btn_password =
+                        '<button class="btn btn-warning text-white" onclick="resetPassword(' .
+                        $row->id .
+                        ')" type="button"><i class="icon-key"></i></button>';
+                    $btn_edit =
+                        '<button class="btn btn-info" onclick="edit(' .
+                        $row->id .
+                        ')" type="button"><i class="icon-pencil"></i></button>';
+                    $btn_delete =
+                        '<button class="btn btn-danger" onclick="destroy(' .
+                        $row->id .
+                        ')" type="button"><i class="icon-trash"></i></button>';
+                    $btn =
+                        '<div class="btn-group">' .
+                        $btn_password .
+                        $btn_edit .
+                        $btn_delete .
+                        '</div>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         } else {
             $data = [
-                'title' => 'User'
+                'title' => 'User',
             ];
             return view('pages.admin.user', $data);
         }
@@ -88,29 +101,41 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $input = $request->only(['name', 'email', 'password', 'certificate']);
-        $this->rules['certificates'] ='required|file|max:2048';
+        $this->rules['certificate'] = 'required|file|max:2048';
         $validator = Validator::make($input, $this->rules, [], []);
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'errors' => $validator->errors(),
+                ],
+                400
+            );
         } else {
             $input['password'] = Hash::make($request->password);
             $create = User::create($input);
             if ($create) {
                 if ($request->has('certificate')) {
-                    $this->__uploadCertificate($request->file('certificate'), $create->id);
+                    $this->__uploadCertificate(
+                        $request->file('certificate'),
+                        $create->id
+                    );
                 }
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'User created successfully'
-                ], 200);
+                return response()->json(
+                    [
+                        'status' => 'success',
+                        'message' => 'User created successfully',
+                    ],
+                    200
+                );
             } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'internal server error'
-                ], 500);
+                return response()->json(
+                    [
+                        'status' => 'error',
+                        'message' => 'internal server error',
+                    ],
+                    500
+                );
             }
         }
     }
@@ -126,19 +151,25 @@ class UserController extends Controller
         $data = User::find($id);
         if ($data) {
             $input = [
-                'password' => Hash::make($request->new_password)
+                'password' => Hash::make($request->new_password),
             ];
             $data->update($input);
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Reset password successfully',
-                'data' => $data
-            ], 200);
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'Reset password successfully',
+                    'data' => $data,
+                ],
+                200
+            );
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Data not exist'
-            ], 404);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Data not exist',
+                ],
+                404
+            );
         }
     }
 
@@ -152,16 +183,22 @@ class UserController extends Controller
     {
         $data = User::find($id);
         if ($data) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Data retrieved successfully',
-                'data' => $data
-            ], 200);
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'Data retrieved successfully',
+                    'data' => $data,
+                ],
+                200
+            );
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Data not exist'
-            ], 404);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Data not exist',
+                ],
+                404
+            );
         }
     }
 
@@ -177,27 +214,39 @@ class UserController extends Controller
         $input = $request->only(['name', 'email', 'certificate']);
         $validator = Validator::make($input, $this->rules, [], []);
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'errors' => $validator->errors()
-            ], 400);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'errors' => $validator->errors(),
+                ],
+                400
+            );
         } else {
             $data = User::find($id);
             if ($data) {
                 $data->update($input);
                 if ($request->has('certificate')) {
-                    $this->__uploadCertificate($request->file('certificate'), $id);
+                    $this->__uploadCertificate(
+                        $request->file('certificate'),
+                        $id
+                    );
                 }
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Data updated successfully',
-                    'data' => $data
-                ], 200);
+                return response()->json(
+                    [
+                        'status' => 'success',
+                        'message' => 'Data updated successfully',
+                        'data' => $data,
+                    ],
+                    200
+                );
             } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Data not exist'
-                ], 404);
+                return response()->json(
+                    [
+                        'status' => 'error',
+                        'message' => 'Data not exist',
+                    ],
+                    404
+                );
             }
         }
     }
@@ -213,20 +262,30 @@ class UserController extends Controller
         $data = User::with('certificate')->find($id);
         if ($data) {
             if ($data->certificate) {
-                if (file_exists(public_path($data->certificate->certificate_path))) {
+                if (
+                    file_exists(
+                        public_path($data->certificate->certificate_path)
+                    )
+                ) {
                     unlink(public_path($data->certificate->certificate_path));
                 }
             }
             $data->delete();
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Data deleted successfully',
-            ], 200);
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'message' => 'Data deleted successfully',
+                ],
+                200
+            );
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Data not exist'
-            ], 404);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Data not exist',
+                ],
+                404
+            );
         }
     }
 }
