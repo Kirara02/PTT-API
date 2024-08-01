@@ -212,7 +212,11 @@ class UserController extends Controller
     {
         $data = User::with('certificate')->find($id);
         if ($data) {
-            unlink(public_path($data->certificate->certificate_path));
+            if ($data->certificate) {
+                if (file_exists(public_path($data->certificate->certificate_path))) {
+                    unlink(public_path($data->certificate->certificate_path));
+                }
+            }
             $data->delete();
             return response()->json([
                 'status' => 'success',
