@@ -46,7 +46,7 @@
             return method;
         }
         var Table = $('#daTable').DataTable({
-            ajax: "{{ route('admin.user.index') }}",
+            ajax: "{{ route('admin.company.index') }}",
             processing: true,
             serverSide: true,
             responsive: true,
@@ -57,56 +57,42 @@
                     data: 'name'
                 },
                 {
-                    data: 'email'
+                    data: 'expire_date'
                 },
                 {
                     data: 'action'
                 }
             ],
-            columnDefs: [
-                { targets: [ 3 ], className: 'dt-center' }
-            ],
         });
 
         function create() {
-            url = "{{ route('admin.user.store') }}";
+            url = "{{ route('admin.company.store') }}";
             method = 'POST';
-            $('.modal-header h5').html("Create User");
+            $('.modal-header h5').html("Create Company");
             $('#basicModal').modal('show');
         }
 
         function edit(id) {
-            let editUrl = "{{ route('admin.user.edit', ':id') }}";
+            let editUrl = "{{ route('admin.company.edit', ':id') }}";
             editUrl = editUrl.replace(':id', id);
-            url = "{{ route('admin.user.update', ':id') }}";
+            url = "{{ route('admin.company.update', ':id') }}";
             url = url.replace(':id', id);
             method = "POST";
             $('.modal-body form').append('<input type="hidden" name="_method" value="PUT" />');
-            $('.password').css('display', 'none');
-            $('.password').find('input').prop('required', false);
             $.get(editUrl, function(res) {
-                $('.modal-header h5').html("Edit User");
+                $('.modal-header h5').html("Edit Company");
                 $('input[name="name"]').val(res.data.name);
-                $('input[name="email"]').val(res.data.email);
+                $('input[name="expire_date"]').val(res.data.expire_date);
                 $('#basicModal').modal('show');
             })
         }
 
-        function resetPassword(id) {
-            method = "PUT";
-            $('#FormReset')[0].reset();
-            let resetUrl = "{{ route('admin.user.reset', ':id') }}";
-            url = resetUrl.replace(':id', id);
-            $('.modal-header h5').html("Reset Password Akun");
-            $('#resetModal').modal('show');
-        }
-
         function destroy(id) {
-            let deleteUrl = "{{ route('admin.user.destroy', ':id') }}";
+            let deleteUrl = "{{ route('admin.company.destroy', ':id') }}";
             deleteUrl = deleteUrl.replace(':id', id);
             swal({
-                title: 'Hapus data ini?',
-                text: "Data ini tidak akan bisa dikembalikan!",
+                title: 'Delete this data?',
+                text: "Data will removed permanently!",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Hapus!',
@@ -156,38 +142,16 @@
                 });
             }
         }
-
-        function showPassword(that) {
-            let type = $(that).closest('.input-group').find('input').attr('type');
-            if (type == 'password') {
-                $(that).closest('.input-group').find('input').attr('type', 'text');
-                $(that).html('<i class="fa-regular fa-eye"></i>');
-            } else {
-                $(that).closest('.input-group').find('input').attr('type', 'password');
-                $(that).html('<i class="fa-regular fa-eye-slash"></i>');
-            }
-        }
         $(document).ready(function() {
             $('#basicModal').on('hide.bs.modal', function() {
                 $('.modal-body form')[0].reset();
-                $('#preview').attr('src', "{{ asset('dist/profiles/default.jpg') }}");
-                $('.password').css('display', 'block');
-                $('.password').find('input').prop('required', true);
                 $('input[name="_method"]').remove();
             })
-            $('#ProfilePhoto').change(function() {
-                const file = this.files[0];
-                if (file) {
-                    let reader = new FileReader();
-                    reader.onload = function(event) {
-                        $('#preview').attr('src', event.target.result);
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-            $('#FormAccount').on('submit', function(e) {
+            $('#FormServer').on('submit', function(e) {
                 e.preventDefault();
                 let formData = new FormData($(this)[0]);
+                formData.append('created_by', "{{ Auth::user()->name }}");
+                formData.append('updated_by', "{{ Auth::user()->name }}");
                 $.ajax({
                     url: getUrl(),
                     type: getMethod(),
@@ -201,33 +165,10 @@
                         Table.ajax.reload(null, false);
                     },
                     error: function(res) {
-                        let fields = res.responseJSON.fields;
+                        let fields = res.responseJSON.errors;
                         $.each(fields, function(i, val) {
                             $.each(val, function(idx, value) {
-                                notification(response.responseJSON.status,
-                                    value);
-                            })
-                        })
-                    }
-                })
-            })
-            $('#FormReset').on('submit', function(e) {
-                e.preventDefault();
-                $.ajax({
-                    url: getUrl(),
-                    type: getMethod(),
-                    data: $(this).serialize(),
-                    dataType: "JSON",
-                    success: function(response) {
-                        $('#resetModal').modal('hide');
-                        notification(response.status, response.message);
-                        Table.ajax.reload(null, false);
-                    },
-                    error: function(res) {
-                        let fields = res.responseJSON.fields;
-                        $.each(fields, function(i, val) {
-                            $.each(val, function(idx, value) {
-                                notification(response.responseJSON.status,
+                                notification(res.responseJSON.status,
                                     value);
                             })
                         })
@@ -242,12 +183,11 @@
                                     Content body start
                                 ***********************************-->
     <div class="content-body">
-
         <div class="row page-titles mx-0">
             <div class="col p-md-0">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Accounts</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Server</a></li>
                 </ol>
             </div>
         </div>
@@ -260,16 +200,16 @@
                         <div class="col">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Account Table</h5>
+                                    <h5 class="card-title">Server Table</h5>
                                     <button class="btn btn-primary float-right" onclick="create()"><i
-                                            class="icon-plus mr-1"></i> Account</button>
+                                            class="icon-plus mr-1"></i> Server</button>
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered" id="daTable">
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
                                                     <th>NAME</th>
-                                                    <th>EMAIL</th>
+                                                    <th>EXPIRE DATE</th>
                                                     <th>ACTION</th>
                                                 </tr>
                                             </thead>
@@ -300,86 +240,20 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="FormAccount" action="" method="post" enctype="multipart/form-data">
+                    <form id="FormServer" action="" method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="Name">Name</label>
-                            <input type="text" id="Name" class="form-control" name="name" placeholder="Name"
-                                required>
+                            <label for="Name">Name*</label>
+                            <input type="text" id="Name" class="form-control" name="name" placeholder="Name">
                         </div>
                         <div class="form-group">
-                            <label for="Email">Email</label>
-                            <input type="email" id="Email" class="form-control" name="email"
-                                placeholder="account@email.com" required>
-                        </div>
-                        <div class="form-group password">
-                            <label for="Password">Password</label>
-                            <div class="input-group mb-3">
-                                <input type="password" id="Password" class="form-control" name="password"
-                                    placeholder="******" required>
-                                <div class="input-group-append">
-                                    <button onclick="showPassword(this)" class="btn btn-outline-dark" type="button"><i
-                                            class="fa-regular fa-eye-slash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="ProfilePhoto">Certificate User</label>
-                            <div class="input-group">
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="certificate" id="ProfilePhoto">
-                                    <label class="custom-file-label">Upload Certificate</label>
-                                </div>
-                            </div>
+                            <label for="ExpireDate">Expire Date*</label>
+                            <input type="date" id="ExpireDate" class="form-control" name="expire_date" placeholder="Expire Date">
                         </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary text-white" data-dismiss="modal">Close <i
                             class="fa-solid fa-xmark"></i></button>
                     <button type="submit" class="btn btn-success text-white">Save <i
-                            class="fa-solid fa-floppy-disk"></i></button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal -->
-    <div class="modal fade" id="resetModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal</h5>
-                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="FormReset" action="" method="post">
-                        <div class="form-group password">
-                            <label for="NewPassword">New Password</label>
-                            <div class="input-group mb-3">
-                                <input type="password" id="NewPassword" class="form-control" name="new_password"
-                                    placeholder="******" required>
-                                <div class="input-group-append">
-                                    <button onclick="showPassword(this)" class="btn btn-outline-dark" type="button"><i
-                                            class="fa-regular fa-eye-slash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group password">
-                            <label for="ConfirmPassword">Confirm Password</label>
-                            <div class="input-group mb-3">
-                                <input type="password" id="ConfirmPassword" class="form-control" name="confirm_password"
-                                    placeholder="******" required>
-                                <div class="input-group-append">
-                                    <button onclick="showPassword(this)" class="btn btn-outline-dark" type="button"><i
-                                            class="fa-regular fa-eye-slash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary text-white" data-dismiss="modal">Tutup <i
-                            class="fa-solid fa-xmark"></i></button>
-                    <button type="submit" class="btn btn-success text-white">Simpan <i
                             class="fa-solid fa-floppy-disk"></i></button>
                     </form>
                 </div>

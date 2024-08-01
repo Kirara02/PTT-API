@@ -11,5 +11,25 @@ class Server extends Model
 
     protected $table = 'servers';
     protected $guarded = ['id'];
-    
+
+    public static function rules()
+    {
+        return [
+            'name' => 'required|max:128',
+            'host' => 'required|max:255',
+            'port' => 'numeric|required',
+            'username' => 'nullable|max:128',
+            'password' => 'nullable|max:128',
+        ];
+    }
+    public static function attributes()
+    {
+        return [
+            'name' => 'Name',
+            'host' => 'Host',
+            'port' => 'Port',
+            'username' => 'Username',
+            'password' => 'Password',
+        ];
+    }
 }

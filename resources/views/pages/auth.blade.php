@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Quixlab - Bootstrap Admin Dashboard Template by Themefisher.com</title>
+    <title>{{ $title }}</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/favicon.png') }}">
     <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"> -->
@@ -52,7 +52,8 @@
                                         <input type="email" name="email" class="form-control" placeholder="Email">
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" name="password" class="form-control" placeholder="Password">
+                                        <input type="password" name="password" class="form-control"
+                                            placeholder="Password">
                                     </div>
                                     <button type="submit" class="btn login-form__btn submit w-100">Sign In</button>
                                 </form>
@@ -83,11 +84,12 @@
             }
         });
 
-        function alertShow(message, status) {
+        function alertShow(message, status)
+        {
             let wrapper = $('.alert-wrapper');
             wrapper.append('<div class="alert alert-' + status + ' alert-dismissible fade show">' +
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>' +
-                '</button> '+message+
+                '</button> ' + message +
                 '</div>');
         }
         $(document).ready(function() {
@@ -100,13 +102,23 @@
                     data: data,
                     dataType: "JSON",
                     success: function(response) {
+                        $('.alert-wrapper').empty();
                         alertShow(response.message, response.status);
                         window.location.href = "{{ route('admin.user.index') }}";
                     },
                     error: function(response) {
                         let res = response.responseJSON;
-                        console.log(res);
-                        alertShow(res.message, 'danger');
+                        $('.alert-wrapper').empty();
+                        if (response.status == 400) {
+                            $.each(res.fields, function(key, val){
+                                $.each(val, function(idx, row){
+                                    alertShow(val[idx], 'danger');
+                                })
+                            })
+                        } else {
+                            $('.alert-wrapper').empty();
+                            alertShow(res.message, 'danger');
+                        }
                     }
                 });
             })

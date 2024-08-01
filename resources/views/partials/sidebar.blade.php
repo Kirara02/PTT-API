@@ -10,6 +10,16 @@
                 </a>
             </li>
             <li>
+                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                    <i class="fa fa-database"></i> <span class="nav-text">Master Data</span>
+                </a>
+                <ul aria-expanded="false">
+                    <li><a href="{{ route('admin.user.index') }}"><i class="icon-people"></i> Accounts</a></li>
+                    <li><a href="{{ route('admin.server.index') }}"><i class="fa fa-sitemap"></i> Servers</a></li>
+                    <li><a href="{{ route('admin.company.index') }}"><i class="fa fa-sitemap"></i> Companies</a></li>
+                </ul>
+            </li>
+            <li>
                 <a href="{{ route('auth.logout') }}" aria-expanded="false">
                     <i class="icon-logout menu-icon"></i><span class="nav-text">Logout</span>
                 </a>

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('host');
             $table->string('port');
-            $table->string('username');
+            $table->string('username')->nullable();
             $table->string('password')->nullable()->default("");
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
