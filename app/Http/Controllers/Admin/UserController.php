@@ -21,7 +21,6 @@ class UserController extends Controller
     protected $rules = [
         'name' => 'required',
         'email' => 'email|required',
-        'certificate' => 'required|file|max:2048'
     ];
     private function __uploadCertificate($file, $user_id)
     {
@@ -34,16 +33,16 @@ class UserController extends Controller
         if ($certificate->count() > 0) {
             // Hapus file sertifikat lama
             // Storage::delete($certificate->certificate_path);
-            unlink($fileName);
+            unlink(public_path('certificates/').$fileName);
             // Update sertifikat dengan path baru
             $certificate->update([
-                'certificate_path' => 'certificate/'.$fileName,
+                'certificate_path' => 'certificates/'.$fileName,
             ]);
         } else {
             // Buat entri sertifikat baru
             Certificate::create([
                 'user_id' => $user_id,
-                'certificate_path' => 'certificate/'.$fileName,
+                'certificate_path' => 'certificates/'.$fileName,
             ]);
         }
     }
@@ -89,6 +88,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $input = $request->only(['name', 'email', 'password', 'certificate']);
+        $this->rules['certificates'] ='required|file|max:2048';
         $validator = Validator::make($input, $this->rules, [], []);
         if ($validator->fails()) {
             return response()->json([
@@ -212,7 +212,7 @@ class UserController extends Controller
     {
         $data = User::with('certificate')->find($id);
         if ($data) {
-            unlink($data->certificate->certificate_path);
+            unlink(public_path($data->certificate->certificate_path));
             $data->delete();
             return response()->json([
                 'status' => 'success',
