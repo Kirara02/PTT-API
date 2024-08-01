@@ -187,7 +187,7 @@
             <div class="col p-md-0">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Server</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Company</a></li>
                 </ol>
             </div>
         </div>
@@ -200,9 +200,9 @@
                         <div class="col">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Server Table</h5>
+                                    <h5 class="card-title">Company Table</h5>
                                     <button class="btn btn-primary float-right" onclick="create()"><i
-                                            class="icon-plus mr-1"></i> Server</button>
+                                            class="icon-plus mr-1"></i> Company</button>
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered" id="daTable">
                                             <thead>
