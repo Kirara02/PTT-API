@@ -58,7 +58,7 @@ class PositionController extends Controller
             );
         } else {
             $input['user_id'] = Auth::id();
-            $user = User::find($input['user_id']);
+            $user = User::find(Auth::id());
             $position = Position::create($input);
             if ($position) {
                 $user->update([
