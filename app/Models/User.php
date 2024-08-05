@@ -17,21 +17,14 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'position_id'];
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     /**
      * The attributes that should be cast.
@@ -42,7 +35,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function servers(){
+    public function servers()
+    {
         return $this->hasMany(Server::class);
     }
 
