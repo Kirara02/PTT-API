@@ -18,7 +18,6 @@ class Position extends Model
     public static function rules()
     {
         return [
-            'user_id' => 'required',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
         ];
@@ -26,7 +25,6 @@ class Position extends Model
     public static function attributes()
     {
         return [
-            'user_id' => 'User',
             'latitude' => 'Latitude',
             'longitude' => 'Longitube'
         ];
