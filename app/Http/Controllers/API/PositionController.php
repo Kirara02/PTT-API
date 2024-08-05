@@ -28,7 +28,7 @@ class PositionController extends Controller
         if ($request->has('id_user')) {
             $data = User::with('position')->find($request->id_user);
         } else {
-            $data = User::with('position')->get();
+            $data = User::has('position')->with('position')->get();
         }
         return response()->json(
             [
