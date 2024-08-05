@@ -29,11 +29,4 @@ class Position extends Model
             'longitude' => 'Longitube'
         ];
     }
-    protected function casts(): array
-    {
-        return [
-            'latitude' => 'double',
-            'longitude' => 'double'
-        ];
-    }
 }
