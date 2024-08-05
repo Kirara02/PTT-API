@@ -40,6 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Positions
     Route::get('/positions', [PositionController::class, 'getData']);
-    Route::get('/position/{user_id}', [PositionController::class, 'getLastPositionUser']);
+    Route::get('/position', [PositionController::class, 'getLastPositionUser']);
     Route::post('/position', [PositionController::class, 'store']);
 });
