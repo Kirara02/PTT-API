@@ -36,7 +36,7 @@ class AuthController extends Controller
             $credentials = $request->only('email', 'password');
 
             if (Auth::attempt($credentials)) {
-                $user = Auth::user()->with('servers.server')->first();
+                $user = Auth::user()->load('servers.server');
 
                 $user->tokens()->delete();
 
