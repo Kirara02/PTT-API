@@ -36,7 +36,7 @@ class AuthController extends Controller
             $credentials = $request->only('email', 'password');
 
             if (Auth::attempt($credentials)) {
-                $user = Auth::user();
+                $user = Auth::user()->with('servers.server')->first();
 
                 $user->tokens()->delete();
 
@@ -53,7 +53,7 @@ class AuthController extends Controller
                         'name' => $user->name,
                         'email' => $user->email,
                         'certificate_path' => $user->certificate->certificate_path,
-                        'servers' => User::with('servers.server')->find($user->id)
+                        'servers' => $user->servers
                     ],
 
                 ]);
