@@ -87,6 +87,11 @@
             $('.modal-body form').append('<input type="hidden" name="_method" value="PUT" />');
             $.get(editUrl, function(res) {
                 $('.modal-header h5').html("Edit Server");
+                let users = [];
+                $.each(res.data.users, function(idx, item){
+                    users.push(item.user_id);
+                })
+                $('#Users').selectpicker('val', users);
                 $('input[name="name"]').val(res.data.name);
                 $('input[name="username"]').val(res.data.username);
                 $('input[name="host"]').val(res.data.host);
@@ -165,8 +170,14 @@
         $(document).ready(function() {
             $('#basicModal').on('hide.bs.modal', function() {
                 $('.modal-body form')[0].reset();
+                $('#Users').selectpicker('val', '');
                 $('input[name="_method"]').remove();
             })
+            $('#Users').selectpicker({
+                liveSearch: true,
+                header: "Select Users",
+                title: "Select Users",
+            });
             $('#FormServer').on('submit', function(e) {
                 e.preventDefault();
                 let formData = new FormData($(this)[0]);
@@ -288,6 +299,14 @@
                                             class="fa-regular fa-eye-slash"></i></button>
                                 </div>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="Users">Users</label>
+                            <select name="users[]" id="Users" class="form-control" multiple required>
+                                @foreach ($users as $item)
+                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                 </div>
                 <div class="modal-footer">

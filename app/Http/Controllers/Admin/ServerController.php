@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Server;
+use App\Models\TrServerUsers;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -15,6 +17,21 @@ class ServerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private function __insertUsers($users, $server_id)
+    {
+        $result = [];
+        foreach ($users as $idx => $row) {
+            $result[] = [
+                'server_id' => $server_id,
+                'user_id' => $row
+            ];
+        }
+        if (TrServerUsers::where('server_id', $server_id)->get()) {
+            TrServerUsers::where('server_id', $server_id)->delete();
+        }
+        TrServerUsers::insert($result);
+        return true;
+    }
     public function index(Request $request)
     {
         if ($request->wantsJson()) {
@@ -31,7 +48,8 @@ class ServerController extends Controller
                 ->make(true);
         } else {
             $data = [
-                'title' => 'Server List | PTT UniGuard'
+                'title' => 'Server List | PTT UniGuard',
+                'users' => User::all()
             ];
             return view('pages.admin.server', $data);
         }
@@ -67,8 +85,12 @@ class ServerController extends Controller
                 'errors' => $validator->errors()
             ], 400);
         } else {
+            if ($request->input('password') == '') {
+                $input['password'] = (string)"";
+            }
             $create = Server::create($input);
             if ($create) {
+                $this->__insertUsers($request->users, $create->id);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Server create successfully',
@@ -101,7 +123,7 @@ class ServerController extends Controller
      */
     public function edit($id)
     {
-        $data = Server::find($id);
+        $data = Server::with('users')->find($id);
         if ($data) {
             return response()->json([
                 'status' => 'success',
@@ -139,8 +161,12 @@ class ServerController extends Controller
             ], 400);
         } else {
             $data = Server::find($id);
+            if ($request->input('password') == '') {
+                $input['password'] = (string)"";
+            }
             if ($data) {
                 $data->update($input);
+                $this->__insertUsers($request->users, $id);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Server updated successfully',

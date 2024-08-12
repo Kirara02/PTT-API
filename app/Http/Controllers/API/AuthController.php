@@ -34,7 +34,7 @@ class AuthController extends Controller
     public function login(Request $request){
         try {
             $credentials = $request->only('email', 'password');
-            
+
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
 
@@ -42,7 +42,7 @@ class AuthController extends Controller
 
                 $accessToken = $user->createToken('API Token')->plainTextToken;
                 $refreshToken = $user->createToken('API Refresh Token')->plainTextToken;
-    
+
                 return response()->json([
                     'success' => true,
                     'message' => 'User logged successfully!',
@@ -53,9 +53,9 @@ class AuthController extends Controller
                         'name' => $user->name,
                         'email' => $user->email,
                         'certificate_path' => $user->certificate->certificate_path,
-                        'servers' => $user->servers
+                        'servers' => User::with('servers.server')->find($user->id)
                     ],
-                    
+
                 ]);
             } else {
                 return response()->json(['message' => 'Invalid Email or Password'], 401);
@@ -71,7 +71,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Successfully logged out',
@@ -108,5 +108,5 @@ class AuthController extends Controller
             ],
         ]);
     }
-    
+
 }

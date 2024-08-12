@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public function servers()
     {
-        return $this->hasMany(Server::class);
+        return $this->hasMany(TrServerUsers::class);
     }
 
     public function certificate()

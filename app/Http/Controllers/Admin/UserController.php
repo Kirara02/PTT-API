@@ -181,7 +181,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $data = User::find($id);
+        $data = User::with('servers.server')->find($id);
         if ($data) {
             return response()->json(
                 [

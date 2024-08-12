@@ -32,4 +32,9 @@ class Server extends Model
             'password' => 'Password',
         ];
     }
+
+    public function users()
+    {
+        return $this->hasMany(TrServerUsers::class);
+    }
 }
