@@ -19,14 +19,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::prefix('auth')->middleware('setHeader')->group(function() {
+Route::prefix('auth')->group(function() {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
 });
 
-Route::middleware('auth:sanctum')->middleware('setHeader')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
     //Server
     Route::get('/servers', [ServerController::class, 'index']);
