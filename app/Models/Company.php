@@ -21,4 +21,12 @@ class Company extends Model
             'name' => 'Name'
         ];
     }
+    public function tr_users()
+    {
+        return $this->hasMany(TrCompanyUsers::class);
+    }
+    public function timezone()
+    {
+        return $this->belongsTo(Timezone::class, 'timezone_id');
+    }
 }

@@ -57,6 +57,9 @@
                     data: 'name'
                 },
                 {
+                    data: 'timezone'
+                },
+                {
                     data: 'expire_date'
                 },
                 {
@@ -81,8 +84,14 @@
             $('.modal-body form').append('<input type="hidden" name="_method" value="PUT" />');
             $.get(editUrl, function(res) {
                 $('.modal-header h5').html("Edit Company");
+                let users = [];
+                $.each(res.data.tr_users, function(idx, item){
+                    users.push(item.user_id);
+                })
+                $('#Users').selectpicker('val', users);
                 $('input[name="name"]').val(res.data.name);
                 $('input[name="expire_date"]').val(res.data.expire_date);
+                $('#Timezone').selectpicker('val', res.data.timezone_id);
                 $('#basicModal').modal('show');
             })
         }
@@ -147,6 +156,16 @@
                 $('.modal-body form')[0].reset();
                 $('input[name="_method"]').remove();
             })
+            $('#Timezone').selectpicker({
+                liveSearch: true,
+                header: "Select Timezone",
+                title: "Select Timezone",
+            });
+            $('#Users').selectpicker({
+                liveSearch: true,
+                header: "Select Users",
+                title: "Select Users",
+            });
             $('#FormServer').on('submit', function(e) {
                 e.preventDefault();
                 let formData = new FormData($(this)[0]);
@@ -209,6 +228,7 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>NAME</th>
+                                                    <th>TIMEZONE</th>
                                                     <th>EXPIRE DATE</th>
                                                     <th>ACTION</th>
                                                 </tr>
@@ -232,7 +252,7 @@
         ***********************************-->
     <!-- Modal -->
     <div class="modal fade" id="basicModal">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Modal</h5>
@@ -241,13 +261,33 @@
                 </div>
                 <div class="modal-body">
                     <form id="FormServer" action="" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="Name">Name*</label>
-                            <input type="text" id="Name" class="form-control" name="name" placeholder="Name">
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="Name">Name*</label>
+                                <input type="text" id="Name" class="form-control" name="name" placeholder="Name">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Timezone">Timezone*</label>
+                                <select name="timezone_id" id="Timezone" class="form-control" required>
+                                    @foreach ($timezones as $item)
+                                        <option value="{{ $item->id }}">{{ $item->code.' | '.$item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="ExpireDate">Expire Date*</label>
-                            <input type="date" id="ExpireDate" class="form-control" name="expire_date" placeholder="Expire Date">
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="ExpireDate">Expire Date*</label>
+                                <input type="date" id="ExpireDate" class="form-control" name="expire_date" placeholder="Expire Date">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Users">Users</label>
+                                <select name="users[]" id="Users" class="form-control" multiple required>
+                                    @foreach ($users as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                 </div>
                 <div class="modal-footer">

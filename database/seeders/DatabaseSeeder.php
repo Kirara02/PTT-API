@@ -17,18 +17,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
-            'name' => 'Fathul Hidayat',
-            'email' => 'fathul@gmail.com',
-            'password' => Hash::make('12345678'),
-        ]);
+        // User::create([
+        //     'name' => 'Fathul Hidayat',
+        //     'email' => 'fathul@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        // ]);
 
-        Server::create([
-            "name" => "PTT UNIGUARD",
-            "host" => "ptt.uniguard.co.id",
-            "port" => 64738,
-            "username" => "Fathul Hidayat",
-            "user_id" => 1
+        // Server::create([
+        //     "name" => "PTT UNIGUARD",
+        //     "host" => "ptt.uniguard.co.id",
+        //     "port" => 64738,
+        //     "username" => "Fathul Hidayat",
+        //     "user_id" => 1
+        // ]);
+        $this->call([
+            TimezoneSeeder::class
         ]);
     }
 }

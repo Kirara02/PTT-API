@@ -54,4 +54,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Position::class, 'id', 'user_id');
     }
+
+    public function company()
+    {
+        return $this->belongsTo(TrCompanyUsers::class, 'id', 'user_id');
+    }
 }

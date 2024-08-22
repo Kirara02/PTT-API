@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\Timezone;
+use App\Models\TrCompanyUsers;
+use App\Models\User;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -15,12 +20,30 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    private function __insertUsers($users, $company_id)
+    {
+        $result = [];
+        foreach ($users as $idx => $row) {
+            $result[] = [
+                'company_id' => $company_id,
+                'user_id' => $row
+            ];
+        }
+        if (TrCompanyUsers::where('company_id', $company_id)->get()) {
+            TrCompanyUsers::where('company_id', $company_id)->delete();
+        }
+        TrCompanyUsers::insert($result);
+        return true;
+    }
     public function index(Request $request)
     {
         if ($request->wantsJson()) {
-            $data = Company::all();
+            $data = Company::with('timezone')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->editColumn('timezone', function($row){
+                    return $row->timezone->code;
+                })
                 ->addColumn('action', function ($row) {
                     $btn_edit = '<button class="btn btn-info" onclick="edit('.$row->id.')" type="button"><i class="icon-pencil"></i></button>';
                     $btn_delete = '<button class="btn btn-danger" onclick="destroy('.$row->id.')" type="button"><i class="icon-trash"></i></button>';
@@ -31,7 +54,9 @@ class CompanyController extends Controller
                 ->make(true);
         } else {
             $data = [
-                'title' => 'Company List | PTT UniGuard'
+                'title' => 'Company List | PTT UniGuard',
+                'timezones' => Timezone::all(),
+                'users' => User::all()
             ];
             return view('pages.admin.company', $data);
         }
@@ -56,7 +81,7 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $input = $request->only([
-            'name', 'expire_date',
+            'name', 'expire_date', 'timezone_id',
             'created_by', 'updated_by'
         ]);
         $validator = Validator::make($input, Company::rules(), [], Company::attributes());
@@ -69,6 +94,7 @@ class CompanyController extends Controller
         } else {
             $create = Company::create($input);
             if ($create) {
+                $this->__insertUsers($request->users, $create->id);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Company created Successfully'
@@ -101,12 +127,14 @@ class CompanyController extends Controller
      */
     public function edit($id)
     {
-        $data = Company::find($id);
+        $data = Company::with('tr_users', 'timezone')->find($id);
         if ($data) {
+            // $date = $data->created_at->timezone($data->timezone->code)->toDateTimeString();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Data retrieved Successfully',
-                'data' => $data
+                'data' => $data,
+                // 'date' => $date
             ], 200);
         } else {
             return response()->json([
@@ -127,7 +155,7 @@ class CompanyController extends Controller
     {
         $input = $request->only([
             'name', 'expire_date',
-            'updated_by'
+            'updated_by', 'timezone_id',
         ]);
         $validator = Validator::make($input, Company::rules(), [], Company::attributes());
         if ($validator->fails()) {
@@ -140,6 +168,7 @@ class CompanyController extends Controller
             $data = Company::find($id);
             if ($data) {
                 $data->update($input);
+                $this->__insertUsers($request->users, $id);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Data updated Successfully',

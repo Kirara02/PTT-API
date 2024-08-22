@@ -26,9 +26,18 @@ class PositionController extends Controller
     public function getLastPositionUser(Request $request)
     {
         if ($request->has('id_user')) {
-            $data = User::with('position')->find($request->id_user);
+            $data = User::with('position')
+                ->join('tr_company_users as tcu', 'tcu.user_id', '=', 'users.id')
+                ->join('companies as co', 'co.id', '=', 'tcu.company_id')
+                ->join('timezones as tz', 'tz.id', '=', 'co.timezone_id')
+                ->find($request->id_user);
         } else {
-            $data = User::has('position')->with('position')->get();
+            $data = User::has('position')
+                ->with('position')
+                ->join('tr_company_users as tcu', 'tcu.user_id', '=', 'users.id')
+                ->join('companies as co', 'co.id', '=', 'tcu.company_id')
+                ->join('timezones as tz', 'tz.id', '=', 'co.timezone_id')
+                ->get();
         }
         return response()->json(
             [
