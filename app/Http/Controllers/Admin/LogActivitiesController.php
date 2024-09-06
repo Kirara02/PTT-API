@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\LogActivity;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class LogActivitiesController extends Controller
 {
@@ -17,13 +19,17 @@ class LogActivitiesController extends Controller
     public function index(Request $request)
     {
         if ($request->wantsJson()) {
-            return DataTables::of(LogActivity::with('user')->latest()->get())
+            $query = LogActivity::select('log_activities.*', 'users.name', 'tz.code')
+                ->join('users', 'users.id', '=', 'log_activities.user_id')
+                ->join('tr_company_users as tcu', 'tcu.user_id', '=', 'log_activities.user_id')
+                ->join('companies as co', 'co.id', '=', 'tcu.company_id')
+                ->join('timezones as tz', 'tz.id', '=', 'co.timezone_id')
+                ->orderBy('log_activities.created_at', 'desc')
+                ->get();
+            return DataTables::of($query)
                 ->addIndexColumn()
                 ->editColumn('created_at', function($row){
-                    return date('Y M d H:i');
-                })
-                ->editColumn('user_id', function($row){
-                    return $row->user->name;
+                    return Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at)->setTimezone($row->code)->format('d M Y H:i');
                 })
                 ->make(true);
         } else {
@@ -52,7 +58,33 @@ class LogActivitiesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = [
+            'user_id' => Auth::user()->id,
+            'activity' => $request->activity
+        ];
+        if ($request->has('attachment')) {
+            // Dapatkan file yang diupload
+            $file = $request->file('attachment');
+
+            // Buat path penyimpanan dengan nama file asli
+            $fileName = $file->getClientOriginalName();
+            // $path = $file->storeAs('audio', $fileName);
+            $file->move(public_path('audio/'), $fileName);
+            $input['attachment'] = 'audio/' . $fileName;
+        }
+
+        $create = LogActivity::create($input);
+        if ($create) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Log Activity Created'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Log Activity failed to create'
+            ], 500);
+        }
     }
 
     /**

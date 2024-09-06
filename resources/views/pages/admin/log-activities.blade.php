@@ -49,13 +49,34 @@
                     data: 'created_at'
                 },
                 {
-                    data: 'user_id'
+                    data: 'name'
                 },
                 {
                     data: 'activity'
+                },
+                {
+                    data: 'attachment',
+                    name: 'attachment',
+                    render: function ( data, type, row, meta ){
+                        if(data !== null){
+                            let fileType = data.split(".");
+                            if (fileType.at(-1) == 'mp3' || fileType.at(-1) == 'wav') {
+                                return '<audio controls controlsList="nodownload">'+
+                                    '<source src="'+getAttachment(data)+'" type="audio/ogg">'+
+                                '</audio>';
+                            }
+                        } else {
+                            return '';
+                        }
+                    }
                 }
             ],
         });
+        function getAttachment(title)
+        {
+            let asset_url = "{{ asset(':attachment') }}";
+            return asset_url.replace(':attachment', title);
+        }
         $(document).ready(function() {
         })
     </script>
@@ -91,6 +112,7 @@
                                                     <th>CREATED AT</th>
                                                     <th>NAME</th>
                                                     <th>ACTIVITY</th>
+                                                    <th>ATTACHMENT</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

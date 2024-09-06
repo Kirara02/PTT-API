@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\LogActivitiesController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CertificateController;
 use App\Http\Controllers\API\PositionController;
 use App\Http\Controllers\API\ServerController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,4 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/positions', [PositionController::class, 'getData']);
     Route::get('/position', [PositionController::class, 'getLastPositionUser']);
     Route::post('/position', [PositionController::class, 'store']);
+
+    //Activity
+    Route::post('/activity', [LogActivitiesController::class, 'store']);
 });
