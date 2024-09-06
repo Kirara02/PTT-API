@@ -5,7 +5,7 @@
     <div class="nk-nav-scroll">
         <ul class="metismenu" id="menu">
             <li>
-                <a href="" aria-expanded="false">
+                <a href="{{ route('auth.dashboard') }}" aria-expanded="false">
                     <i class="icon-home menu-icon"></i><span class="nav-text">Dashboard</span>
                 </a>
             </li>

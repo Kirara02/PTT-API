@@ -104,7 +104,7 @@
                     success: function(response) {
                         $('.alert-wrapper').empty();
                         alertShow(response.message, response.status);
-                        window.location.href = "{{ route('admin.user.index') }}";
+                        window.location.href = "{{ route('auth.dashboard') }}";
                     },
                     error: function(response) {
                         let res = response.responseJSON;

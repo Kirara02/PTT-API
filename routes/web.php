@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\ServerController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +23,9 @@ Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
 Route::middleware('auth')->group(function(){
     Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('auth.dashboard');
+    Route::get('/dashboard/markers', [DashboardController::class, 'markersUser'])->name('auth.dashboard.markers');
     Route::prefix('admin')->name('admin.')->group(function(){
         //User
         Route::resource('user', UserController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
