@@ -11,6 +11,7 @@
     <script src="{{ asset('assets/plugins/toastr/js/toastr.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/leaflet/leaflet.js') }}"></script>
     <script src="{{ asset('assets/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/moment/moment-timezone.min.js') }}"></script>
     <script>
         function notification(status, message) {
             if (status == 'error') {
@@ -72,8 +73,7 @@
             $.get("{{ route('auth.dashboard.markers') }}", function(res) {
                 $.each(res.data, function(idx, val) {
                     marker = new L.marker([val.position.latitude, val.position.longitude])
-                        .bindPopup(val.name + '<br>' + moment(val.position.created_at).format(
-                            'DD MMM YYYY HH:mm'))
+                        .bindPopup(val.name + '<br>' + moment(val.position.created_at).tz(val.code).format('DD MMM YYYY HH:mm z'))
                         .on('click', onClick)
                         .addTo(map);
                 })

@@ -29,7 +29,7 @@ class LogActivitiesController extends Controller
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->editColumn('created_at', function($row){
-                    return Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at)->setTimezone($row->code)->format('d M Y H:i');
+                    return Carbon::parse(strtotime($row->created_at))->setTimezone($row->code)->isoFormat('DD MMM Y HH:mm z');
                 })
                 ->make(true);
         } else {
