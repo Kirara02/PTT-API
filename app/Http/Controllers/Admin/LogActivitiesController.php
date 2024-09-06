@@ -19,6 +19,9 @@ class LogActivitiesController extends Controller
         if ($request->wantsJson()) {
             return DataTables::of(LogActivity::with('user')->latest()->get())
                 ->addIndexColumn()
+                ->editColumn('created_at', function($row){
+                    return date('Y M d H:i');
+                })
                 ->editColumn('user_id', function($row){
                     return $row->user->name;
                 })

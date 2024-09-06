@@ -46,6 +46,9 @@
                     data: 'DT_RowIndex'
                 },
                 {
+                    data: 'created_at'
+                },
+                {
                     data: 'user_id'
                 },
                 {
@@ -85,6 +88,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
+                                                    <th>CREATED AT</th>
                                                     <th>NAME</th>
                                                     <th>ACTIVITY</th>
                                                 </tr>
