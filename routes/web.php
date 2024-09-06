@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\LogActivitiesController;
 use App\Http\Controllers\Admin\ServerController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
@@ -34,5 +35,7 @@ Route::middleware('auth')->group(function(){
         Route::resource('server', ServerController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
         //Company
         Route::resource('company', CompanyController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
+        //Log Activity
+        Route::resource('log-activity', LogActivitiesController::class)->only(['index']);
     });
 });

@@ -73,6 +73,7 @@ class PositionController extends Controller
                 $user->update([
                     'position_id' => $position->id,
                 ]);
+                $this->saveActivity('Updating Location', $user->id);
                 return response()->json(
                     [
                         'status' => 'success',

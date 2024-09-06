@@ -32,6 +32,7 @@ class AuthController extends Controller
             );
         } else {
             if (Auth::attempt($input)) {
+                $this->saveActivity('Login Web', Auth::user()->id);
                 return response()->json(
                     [
                         'status' => 'success',

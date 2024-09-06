@@ -42,7 +42,7 @@ class AuthController extends Controller
 
                 $accessToken = $user->createToken('API Token')->plainTextToken;
                 $refreshToken = $user->createToken('API Refresh Token')->plainTextToken;
-
+                $this->saveActivity('Login App', $user->id);
                 return response()->json([
                     'success' => true,
                     'message' => 'User logged successfully!',

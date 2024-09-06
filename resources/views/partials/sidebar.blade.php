@@ -20,6 +20,11 @@
                 </ul>
             </li>
             <li>
+                <a href="{{ route('admin.log-activity.index') }}" aria-expanded="false">
+                    <i class="fa-solid fa-clock-rotate-left menu-icon"></i> <span class="nav-text">Log Activity</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('auth.logout') }}" aria-expanded="false">
                     <i class="icon-logout menu-icon"></i><span class="nav-text">Logout</span>
                 </a>
