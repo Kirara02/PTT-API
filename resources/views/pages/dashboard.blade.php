@@ -119,7 +119,7 @@
                                 <div class="col-sm-4 b-r-default p-b-20 p-t-20">
                                     <div class="row align-items-center text-center">
                                         <div class="col-4 p-r-0">
-                                            <i class="far fa-user text-c-purple f-24"></i>
+                                            <i class="fas fa-user text-c-purple f-24"></i>
                                         </div>
                                         <div class="col-8 p-l-0">
                                             <h5>{{ $countUser }}</h5>
@@ -130,22 +130,22 @@
                                 <div class="col-sm-4 b-r-default p-b-20 p-t-20">
                                     <div class="row align-items-center text-center">
                                         <div class="col-4 p-r-0">
-                                            <i class="far fa-user text-c-purple f-24"></i>
+                                            <i class="fas fa-suitcase text-c-blue f-24"></i>
                                         </div>
                                         <div class="col-8 p-l-0">
-                                            <h5>10K</h5>
-                                            <p class="text-muted m-b-0">Visitors</p>
+                                            <h5>{{ $countCompanies }}</h5>
+                                            <p class="text-muted m-b-0">Company</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-4 b-r-default p-b-20 p-t-20">
                                     <div class="row align-items-center text-center">
                                         <div class="col-4 p-r-0">
-                                            <i class="far fa-user text-c-purple f-24"></i>
+                                            <i class="fas fa-server text-c-green f-24"></i>
                                         </div>
                                         <div class="col-8 p-l-0">
-                                            <h5>10K</h5>
-                                            <p class="text-muted m-b-0">Visitors</p>
+                                            <h5>{{ $countServer }}</h5>
+                                            <p class="text-muted m-b-0">Server</p>
                                         </div>
                                     </div>
                                 </div>
@@ -167,8 +167,8 @@
                                             <h5 class="card-title">User Location</h5>
                                         </div>
                                         <div class="col-md-6">
-                                            <button class="btn btn-primary float-right" onclick="markersUser()"><i
-                                                    class="fa fa-arrows-rotate"></i> Refresh</button>
+                                            <button class="btn btn-sm btn-primary float-right" onclick="markersUser()"><i
+                                                    class="fas fa-sync"></i> Refresh</button>
                                         </div>
                                     </div>
                                     <div id="map" style="height: 500px">

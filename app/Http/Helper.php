@@ -52,7 +52,7 @@ class Helper
     {
         $btn = '';
         foreach ($buttons as $key => $val) {
-            $btn .= '<button class="btn '.self::btnColor($val).'" onclick="'.self::btnAction($val, $data).'" type="button"><i class="'.self::btnIcon($val).'"></i></button>';
+            $btn .= '<button class="btn btn-sm '.self::btnColor($val).'" onclick="'.self::btnAction($val, $data).'" type="button"><i class="'.self::btnIcon($val).'"></i></button>';
         }
         return '<div class="btn-group">'.$btn.'</div>';
     }

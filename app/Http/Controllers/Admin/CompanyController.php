@@ -52,7 +52,7 @@ class CompanyController extends Controller
                 ->make(true);
         } else {
             $data = [
-                'title' => 'Company List | PTT UniGuard',
+                'title' => 'Company',
                 'timezones' => Timezone::all(),
                 'users' => User::all(),
             ];

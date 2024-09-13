@@ -68,7 +68,54 @@
                     data: 'action'
                 }
             ],
+            dom: '<"row"<"col-sm-3"l><"col-sm-6"B><"col-sm-3"fr>>t<"row"<"col-sm-5"i><"col-sm-7"p>>',
+            buttons: [{
+                    extend: 'copy',
+                    className: 'btn-sm btn-info',
+                    text: '<i class="fas fa-copy"></i> Copy',
+                    exportOptions: {
+                        columns: ':visible th:not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'excel',
+                    className: 'btn-sm btn-info',
+                    text: '<i class="fa fa-file-excel"></i> Excel',
+                    exportOptions: {
+                        columns: ':visible th:not(:last-child)'
+                    },
+                },
+                {
+                    extend: 'pdf',
+                    className: 'btn-sm btn-info',
+                    text: '<i class="fas fa-file-pdf"></i> Pdf',
+                    exportOptions: {
+                        columns: ':visible th:not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    className: 'btn-sm btn-info',
+                    text: '<i class="fas fa-print"></i> Print',
+                    exportOptions: {
+                        columns: ':visible th:not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    className: 'btn-sm btn-info',
+                    text: '<i class="fas fa-sync"></i> Refresh',
+                    action: function(){
+                        reload();
+                    }
+                }
+            ]
         });
+
+        function reload()
+        {
+            Table.ajax.reload(null, false);
+        }
 
         function create() {
             url = "{{ route('admin.server.store') }}";
@@ -212,15 +259,6 @@
                                             Content body start
                                         ***********************************-->
     <div class="content-body">
-        <div class="row page-titles mx-0">
-            <div class="col p-md-0">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Server</a></li>
-                </ol>
-            </div>
-        </div>
-        <!-- row -->
 
         <div class="container-fluid">
             <div class="row">
