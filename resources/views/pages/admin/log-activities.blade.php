@@ -42,9 +42,7 @@
             processing: true,
             serverSide: true,
             responsive: true,
-            columns: [{
-                    data: 'DT_RowIndex'
-                },
+            columns: [
                 {
                     data: 'created_at'
                 },
