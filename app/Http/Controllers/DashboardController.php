@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Server;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,7 +14,8 @@ class DashboardController extends Controller
         $data = [
             'title' => 'Dashboard',
             'countServer' => Server::count(),
-            'countUser' => User::count()
+            'countUser' => User::count(),
+            'countCompanies' => Company::count()
         ];
         return view('pages.dashboard', $data);
     }

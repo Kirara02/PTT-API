@@ -1,4 +1,4 @@
-@extends('layouts.default_layout')
+@extends('layouts.default')
 @section('title')
     {{ $title }}
 @endsection
@@ -26,7 +26,6 @@
     <script src="{{ asset('assets/plugins/pdfmake/build/pdfmake.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/pdfmake/build/vfs_fonts.js') }}"></script>
     <script src="{{ asset('assets/plugins/sweetalert2/dist/sweetalert2.min.js') }}"></script>
-    <script src="{{ asset('assets/icons/font-awesome/js/all.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/toastr/js/toastr.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
     <script>
@@ -88,7 +87,7 @@
             $.get(editUrl, function(res) {
                 $('.modal-header h5').html("Edit Server");
                 let users = [];
-                $.each(res.data.users, function(idx, item){
+                $.each(res.data.users, function(idx, item) {
                     users.push(item.user_id);
                 })
                 $('#Users').selectpicker('val', users);
@@ -210,8 +209,8 @@
 @endpush
 @section('content')
     <!--**********************************
-                                    Content body start
-                                ***********************************-->
+                                            Content body start
+                                        ***********************************-->
     <div class="content-body">
         <div class="row page-titles mx-0">
             <div class="col p-md-0">
@@ -260,11 +259,11 @@
         <!-- #/ container -->
     </div>
     <!--**********************************
-            Content body end
-        ***********************************-->
+                    Content body end
+                ***********************************-->
     <!-- Modal -->
     <div class="modal fade" id="basicModal">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Modal</h5>
@@ -273,40 +272,47 @@
                 </div>
                 <div class="modal-body">
                     <form id="FormServer" action="" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="Name">Name*</label>
-                            <input type="text" id="Name" class="form-control" name="name" placeholder="Name">
-                        </div>
-                        <div class="form-group">
-                            <label for="Host">Host*</label>
-                            <input type="text" id="Host" class="form-control" name="host" placeholder="Host">
-                        </div>
-                        <div class="form-group">
-                            <label for="Port">Port*</label>
-                            <input type="number" id="Port" class="form-control" name="port" placeholder="Port">
-                        </div>
-                        <div class="form-group">
-                            <label for="Username">Username</label>
-                            <input type="text" id="Username" class="form-control" name="username" placeholder="Username">
-                        </div>
-                        <div class="form-group password">
-                            <label for="Password">Password</label>
-                            <div class="input-group mb-3">
-                                <input type="password" id="Password" class="form-control" name="password"
-                                    placeholder="******">
-                                <div class="input-group-append">
-                                    <button onclick="showPassword(this)" class="btn btn-outline-dark" type="button"><i
-                                            class="fa-regular fa-eye-slash"></i></button>
-                                </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="Name">Name*</label>
+                                <input type="text" id="Name" class="form-control" name="name" placeholder="Name">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Host">Host*</label>
+                                <input type="text" id="Host" class="form-control" name="host" placeholder="Host">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="Users">Users</label>
-                            <select name="users[]" id="Users" class="form-control" multiple required>
-                                @foreach ($users as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="Port">Port*</label>
+                                <input type="number" id="Port" class="form-control" name="port" placeholder="Port">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Username">Username</label>
+                                <input type="text" id="Username" class="form-control" name="username"
+                                    placeholder="Username">
+                            </div>
+                        </div>
+                        <div class="form-group row password">
+                            <div class="col-md-6">
+                                <label for="Password">Password</label>
+                                <div class="input-group mb-3">
+                                    <input type="password" id="Password" class="form-control" name="password"
+                                        placeholder="******">
+                                    <div class="input-group-append">
+                                        <button onclick="showPassword(this)" class="btn btn-outline-dark" type="button"><i
+                                                class="fa-regular fa-eye-slash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Users">Users</label>
+                                <select name="users[]" id="Users" class="form-control" multiple required>
+                                    @foreach ($users as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                 </div>
                 <div class="modal-footer">

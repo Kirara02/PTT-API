@@ -31,7 +31,7 @@ class AuthController extends Controller
                 400
             );
         } else {
-            if (Auth::attempt($input)) {
+            if (Auth::attempt($input, $request->remember_me)) {
                 $this->saveActivity('Login Web', Auth::user()->id);
                 return response()->json(
                     [

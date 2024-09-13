@@ -1,4 +1,4 @@
-@extends('layouts.default_layout')
+@extends('layouts.default')
 @section('title')
     {{ $title }}
 @endsection

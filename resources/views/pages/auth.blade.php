@@ -8,75 +8,139 @@
     <title>{{ $title }}</title>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/images/favicon.png') }}">
-    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/pages/waves/css/waves.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/icon/themify-icons/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/icon/icofont/css/icofont.css') }}">
+    <link href="{{ asset('assets/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 
 </head>
 
-<body class="h-100">
+<body themebg-pattern="theme1">
+    <!-- Pre-loader start -->
+    <div class="theme-loader">
+        <div class="loader-track">
+            <div class="preloader-wrapper">
+                <div class="spinner-layer spinner-blue">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+                <div class="spinner-layer spinner-red">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
 
-    <!--*******************
-        Preloader start
-    ********************-->
-    <div id="preloader">
-        <div class="loader">
-            <svg class="circular" viewBox="25 25 50 50">
-                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3"
-                    stroke-miterlimit="10" />
-            </svg>
-        </div>
-    </div>
-    <!--*******************
-        Preloader end
-    ********************-->
+                <div class="spinner-layer spinner-yellow">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
 
-
-
-
-
-    <div class="login-form-bg h-100">
-        <div class="container h-100">
-            <div class="row justify-content-center h-100">
-                <div class="col-xl-6">
-                    <div class="form-input-content">
-                        <div class="card login-form mb-0">
-                            <div class="card-body pt-5">
-                                <a class="text-center" href="">
-                                    <h4>PTT Uniguard</h4>
-                                </a>
-                                <form class="mt-5 mb-5 login-input">
-                                    @csrf
-                                    <div class="alert-wrapper">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="email" name="email" class="form-control" placeholder="Email">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" name="password" class="form-control"
-                                            placeholder="Password">
-                                    </div>
-                                    <button type="submit" class="btn login-form__btn submit w-100">Sign In</button>
-                                </form>
-                            </div>
-                        </div>
+                <div class="spinner-layer spinner-green">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Pre-loader end -->
 
+      <section class="login-block">
+          <!-- Container-fluid starts -->
+          <div class="container">
+              <div class="row">
+                  <div class="col-sm-12">
+                      <!-- Authentication card start -->
 
+                          <form class="md-float-material form-material">
+                              <div class="text-center">
+                                  <img src="{{ asset('dist/images/logo-uniguard.svg') }}" width="224" alt="logo.png">
+                              </div>
+                              @csrf
+                              <div class="auth-box card">
+                                  <div class="card-block">
+                                      <div class="row m-b-20">
+                                          <div class="col-md-12">
+                                              <h3 class="text-center">Sign In</h3>
+                                          </div>
+                                      </div>
+                                      <div class="alert-wrapper"></div>
+                                      <div class="form-group form-primary">
+                                          <input type="text" name="email" class="form-control">
+                                          <span class="form-bar"></span>
+                                          <label class="float-label">Your Email Address</label>
+                                      </div>
+                                      <div class="form-group form-primary">
+                                          <input type="password" name="password" class="form-control">
+                                          <span class="form-bar"></span>
+                                          <label class="float-label">Password</label>
+                                      </div>
+                                      <div class="row m-t-25 text-left">
+                                          <div class="col-12">
+                                              <div class="checkbox-fade fade-in-primary d-">
+                                                  <label>
+                                                      <input type="checkbox" name="remember" value="">
+                                                      <span class="cr"><i class="cr-icon icofont icofont-ui-check txt-primary"></i></span>
+                                                      <span class="text-inverse">Remember me</span>
+                                                  </label>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="row m-t-30">
+                                          <div class="col-md-12">
+                                              <button type="submit" class="btn btn-primary btn-md btn-block waves-effect waves-light text-center m-b-20">Sign in</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </form>
+                          <!-- end of form -->
+                  </div>
+                  <!-- end of col-sm-12 -->
+              </div>
+              <!-- end of row -->
+          </div>
+          <!-- end of container-fluid -->
+      </section>
 
-
-    <!--**********************************
-        Scripts
-    ***********************************-->
-    <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/plugins/common/common.min.js') }}"></script>
-    <script src="{{ asset('assets/js/custom.min.js') }}"></script>
-    <script src="{{ asset('assets/js/settings.js') }}"></script>
-    <script src="{{ asset('assets/js/gleek.js') }}"></script>
-    <script src="{{ asset('assets/js/styleSwitcher.js') }}"></script>
+    <!-- Required Jquery -->
+    <script type="text/javascript" src="{{ asset('assets/js/jquery/jquery.min.js ') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery-ui/jquery-ui.min.js ') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/popper.js/popper.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/bootstrap/js/bootstrap.min.js ') }}"></script>
+    <!-- waves js -->
+    <script src="{{ asset('assets/pages/waves/js/waves.min.js') }}"></script>
+    <!-- jquery slimscroll js -->
+    <script type="text/javascript" src="{{ asset('assets/js/jquery-slimscroll/jquery.slimscroll.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/common-pages.js') }}"></script>
     <script>
         $.ajaxSetup({
             headers: {
@@ -84,8 +148,7 @@
             }
         });
 
-        function alertShow(message, status)
-        {
+        function alertShow(message, status) {
             let wrapper = $('.alert-wrapper');
             wrapper.append('<div class="alert alert-' + status + ' alert-dismissible fade show">' +
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>' +
@@ -93,13 +156,16 @@
                 '</div>');
         }
         $(document).ready(function() {
-            $('.login-input').on('submit', function(e) {
+            $('.form-material').on('submit', function(e) {
                 e.preventDefault();
-                let data = $(this).serialize();
+                let formData = new FormData($(this)[0]);
+                formData.append('remember_me', $('input[name="remember"]').prop('checked')?true:false);
                 $.ajax({
                     url: "{{ route('auth.login') }}",
                     type: "POST",
-                    data: data,
+                    contentType: false,
+                    processData: false,
+                    data: formData,
                     dataType: "JSON",
                     success: function(response) {
                         $('.alert-wrapper').empty();
@@ -110,8 +176,8 @@
                         let res = response.responseJSON;
                         $('.alert-wrapper').empty();
                         if (response.status == 400) {
-                            $.each(res.fields, function(key, val){
-                                $.each(val, function(idx, row){
+                            $.each(res.fields, function(key, val) {
+                                $.each(val, function(idx, row) {
                                     alertShow(val[idx], 'danger');
                                 })
                             })

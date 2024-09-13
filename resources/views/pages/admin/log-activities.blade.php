@@ -1,4 +1,4 @@
-@extends('layouts.default_layout')
+@extends('layouts.default')
 @section('title')
     {{ $title }}
 @endsection
@@ -61,7 +61,7 @@
                         if(data !== null){
                             let fileType = data.split(".");
                             if (fileType.at(-1) == 'mp3' || fileType.at(-1) == 'wav') {
-                                return '<audio controls controlsList="nodownload">'+
+                                return '<audio controls>'+
                                     '<source src="'+getAttachment(data)+'" type="audio/ogg">'+
                                 '</audio>';
                             }
@@ -71,6 +71,40 @@
                     }
                 }
             ],
+            dom: '<"row"<"col-sm-4"l><"col-sm-5"B><"col-sm-3"fr>>t<"row"<"col-sm-5"i><"col-sm-7"p>>',
+            buttons: [{
+                    extend: 'copy',
+                    className: 'btn-sm btn-info',
+                    text: '<i class="ti ti-copy"></i> Copy',
+                    exportOptions: {
+                        columns: ':visible th:not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'excel',
+                    className: 'btn-sm btn-info',
+                    text: '<i class="fa fa-file-excel"></i> Excel',
+                    exportOptions: {
+                        columns: ':visible th:not(:last-child)'
+                    },
+                },
+                {
+                    extend: 'pdf',
+                    className: 'btn-sm btn-info',
+                    text: '<i class="fas fa-file-pdf"></i> Pdf',
+                    exportOptions: {
+                        columns: ':visible th:not(:last-child)'
+                    }
+                },
+                {
+                    extend: 'print',
+                    className: 'btn-sm btn-info',
+                    text: '<i class="fas fa-print"></i> Print',
+                    exportOptions: {
+                        columns: ':visible th:not(:last-child)'
+                    }
+                }
+            ]
         });
         function getAttachment(title)
         {

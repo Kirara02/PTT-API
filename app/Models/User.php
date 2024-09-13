@@ -17,7 +17,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'email', 'password', 'position_id'];
+    protected $fillable = ['name', 'email', 'password', 'position_id', 'level_id', 'photo'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -58,5 +58,10 @@ class User extends Authenticatable
     public function company()
     {
         return $this->belongsTo(TrCompanyUsers::class, 'id', 'user_id');
+    }
+
+    public function level()
+    {
+        return $this->belongsTo(Level::class, 'level_id');
     }
 }

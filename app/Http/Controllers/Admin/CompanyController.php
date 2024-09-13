@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helper;
 use App\Models\Company;
 use App\Models\Timezone;
 use App\Models\TrCompanyUsers;
@@ -26,7 +27,7 @@ class CompanyController extends Controller
         foreach ($users as $idx => $row) {
             $result[] = [
                 'company_id' => $company_id,
-                'user_id' => $row
+                'user_id' => $row,
             ];
         }
         if (TrCompanyUsers::where('company_id', $company_id)->get()) {
@@ -41,14 +42,11 @@ class CompanyController extends Controller
             $data = Company::with('timezone')->get();
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->editColumn('timezone', function($row){
+                ->editColumn('timezone', function ($row) {
                     return $row->timezone->code;
                 })
                 ->addColumn('action', function ($row) {
-                    $btn_edit = '<button class="btn btn-info" onclick="edit('.$row->id.')" type="button"><i class="icon-pencil"></i></button>';
-                    $btn_delete = '<button class="btn btn-danger" onclick="destroy('.$row->id.')" type="button"><i class="icon-trash"></i></button>';
-                    $btn = '<div class="btn-group">'.$btn_edit.$btn_delete.'</div>';
-                    return $btn;
+                    return Helper::actionButtons($row, ['edit', 'delete']);
                 })
                 ->rawColumns(['action'])
                 ->make(true);
@@ -56,7 +54,7 @@ class CompanyController extends Controller
             $data = [
                 'title' => 'Company List | PTT UniGuard',
                 'timezones' => Timezone::all(),
-                'users' => User::all()
+                'users' => User::all(),
             ];
             return view('pages.admin.company', $data);
         }
@@ -81,29 +79,34 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $input = $request->only([
-            'name', 'expire_date', 'timezone_id',
-            'created_by', 'updated_by'
+            'name',
+            'expire_date',
+            'timezone_id',
+            'created_by',
+            'updated_by',
         ]);
-        $validator = Validator::make($input, Company::rules(), [], Company::attributes());
+        $validator = Validator::make(
+            $input,
+            Company::rules(),
+            [],
+            Company::attributes()
+        );
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'errors' => $validator->errors(),
-                'message' => 'Bad input values'
-            ], 400);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'errors' => $validator->errors(),
+                    'message' => 'Bad input values',
+                ],
+                400
+            );
         } else {
             $create = Company::create($input);
             if ($create) {
                 $this->__insertUsers($request->users, $create->id);
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Company created Successfully'
-                ], 200);
+                return $this->responseSuccess('Company created Successfully');
             } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'internal server error'
-                ], 500);
+                return $this->responseError('Internal server Error', 500);
             }
         }
     }
@@ -129,18 +132,9 @@ class CompanyController extends Controller
     {
         $data = Company::with('tr_users', 'timezone')->find($id);
         if ($data) {
-            // $date = $data->created_at->timezone($data->timezone->code)->toDateTimeString();
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Data retrieved Successfully',
-                'data' => $data,
-                // 'date' => $date
-            ], 200);
+            return $this->responseSuccess($data, 'data');
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Data not exist'
-            ], 404);
+            return $this->responseError('Data not Exist', 404);
         }
     }
 
@@ -154,31 +148,34 @@ class CompanyController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->only([
-            'name', 'expire_date',
-            'updated_by', 'timezone_id',
+            'name',
+            'expire_date',
+            'updated_by',
+            'timezone_id',
         ]);
-        $validator = Validator::make($input, Company::rules(), [], Company::attributes());
+        $validator = Validator::make(
+            $input,
+            Company::rules(),
+            [],
+            Company::attributes()
+        );
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'errors' => $validator->errors(),
-                'message' => 'Bad input values'
-            ], 400);
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'errors' => $validator->errors(),
+                    'message' => 'Bad input values',
+                ],
+                400
+            );
         } else {
             $data = Company::find($id);
             if ($data) {
                 $data->update($input);
                 $this->__insertUsers($request->users, $id);
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Data updated Successfully',
-                    'data' => $data
-                ], 200);
+                return $this->responseSuccess('Company updated Successfully');
             } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Data not exist'
-                ], 404);
+                return $this->responseError('Data not Exist', 404);
             }
         }
     }
@@ -194,15 +191,9 @@ class CompanyController extends Controller
         $data = Company::find($id);
         if ($data) {
             $data->delete();
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Data deleted Successfully',
-            ], 200);
+            return $this->responseSuccess('Company deleted Successfully');
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Data not exist'
-            ], 404);
+            return $this->responseError('Data not Exist', 404);
         }
     }
 }

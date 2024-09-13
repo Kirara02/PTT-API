@@ -1,4 +1,4 @@
-@extends('layouts.default_layout')
+@extends('layouts.default')
 @section('title')
     {{ $title }}
 @endsection
@@ -63,9 +63,10 @@
                     data: 'action'
                 }
             ],
-            columnDefs: [
-                { targets: [ 3 ], className: 'dt-center' }
-            ],
+            columnDefs: [{
+                targets: [3],
+                className: 'dt-center'
+            }],
         });
 
         function create() {
@@ -88,6 +89,8 @@
                 $('.modal-header h5').html("Edit User");
                 $('input[name="name"]').val(res.data.name);
                 $('input[name="email"]').val(res.data.email);
+                $('select[name="level_id"]').selectpicker('val', res.data.level_id);
+                $('#preview').attr('src', "{{ asset('dist/profiles') }}"+'/'+res.data.photo);
                 $('#basicModal').modal('show');
             })
         }
@@ -161,10 +164,10 @@
             let type = $(that).closest('.input-group').find('input').attr('type');
             if (type == 'password') {
                 $(that).closest('.input-group').find('input').attr('type', 'text');
-                $(that).html('<i class="fa-regular fa-eye"></i>');
+                $(that).html('<i class="ti-eye"></i>');
             } else {
                 $(that).closest('.input-group').find('input').attr('type', 'password');
-                $(that).html('<i class="fa-regular fa-eye-slash"></i>');
+                $(that).html('<i class="fas fa-eye-slash"></i>');
             }
         }
         $(document).ready(function() {
@@ -175,6 +178,11 @@
                 $('.password').find('input').prop('required', true);
                 $('input[name="_method"]').remove();
             })
+            $('#Level').selectpicker({
+                liveSearch: true,
+                header: "Select Level",
+                title: "Select Level",
+            });
             $('#ProfilePhoto').change(function() {
                 const file = this.files[0];
                 if (file) {
@@ -239,8 +247,8 @@
 @endpush
 @section('content')
     <!--**********************************
-                                    Content body start
-                                ***********************************-->
+                                        Content body start
+                                    ***********************************-->
     <div class="content-body">
 
         <div class="row page-titles mx-0">
@@ -261,8 +269,8 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Account Table</h5>
-                                    <button class="btn btn-primary float-right" onclick="create()"><i
-                                            class="icon-plus mr-1"></i> Account</button>
+                                    <button class="btn btn-sm btn-primary float-right" onclick="create()"><i
+                                            class="ti-plus"></i> Account</button>
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered" id="daTable">
                                             <thead>
@@ -288,11 +296,11 @@
         <!-- #/ container -->
     </div>
     <!--**********************************
-            Content body end
-        ***********************************-->
+                Content body end
+            ***********************************-->
     <!-- Modal -->
     <div class="modal fade" id="basicModal">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Modal</h5>
@@ -301,42 +309,70 @@
                 </div>
                 <div class="modal-body">
                     <form id="FormAccount" action="" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="Name">Name</label>
-                            <input type="text" id="Name" class="form-control" name="name" placeholder="Name"
-                                required>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="Name">Name*</label>
+                                <input type="text" id="Name" class="form-control" name="name" placeholder="Name"
+                                    required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Email">Email*</label>
+                                <input type="email" id="Email" class="form-control" name="email"
+                                    placeholder="account@email.com" required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="Email">Email</label>
-                            <input type="email" id="Email" class="form-control" name="email"
-                                placeholder="account@email.com" required>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="Level" class="col-form-label">Level*</label>
+                                <select name="level_id" id="Level" class="form-control">
+                                    @foreach ($levels as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ProfilePhoto">Photo Profile</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" name="photo" id="ProfilePhoto">
+                                        <label class="custom-file-label">Upload Photo</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group password">
-                            <label for="Password">Password</label>
-                            <div class="input-group mb-3">
-                                <input type="password" id="Password" class="form-control" name="password"
-                                    placeholder="******" required>
-                                <div class="input-group-append">
-                                    <button onclick="showPassword(this)" class="btn btn-outline-dark" type="button"><i
-                                            class="fa-regular fa-eye-slash"></i></button>
+                        <div class="password">
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label for="Password">Password*</label>
+                                    <div class="input-group mb-3">
+                                        <input type="password" id="Password" class="form-control" name="password"
+                                            placeholder="******" required>
+                                        <div class="input-group-append">
+                                            <button onclick="showPassword(this)" class="btn btn-outline-dark" type="button"><i
+                                                    class="ti-eye"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="Certificate">Certificate User*</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="certificate" id="Certificate">
+                                            <label class="custom-file-label">Upload Certificate</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="ProfilePhoto">Certificate User</label>
-                            <div class="input-group">
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="certificate" id="ProfilePhoto">
-                                    <label class="custom-file-label">Upload Certificate</label>
-                                </div>
-                            </div>
+                            <img id="preview" src="{{ asset('dist/profiles/default.jpg') }}" alt="Profile Photo" class="img-thumbnail" width="128">
                         </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary text-white" data-dismiss="modal">Close <i
-                            class="fa-solid fa-xmark"></i></button>
+                            class="ti-close"></i></button>
                     <button type="submit" class="btn btn-success text-white">Save <i
-                            class="fa-solid fa-floppy-disk"></i></button>
+                            class="ti-save"></i></button>
                     </form>
                 </div>
             </div>

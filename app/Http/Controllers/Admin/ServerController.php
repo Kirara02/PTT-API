@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helper;
 use App\Models\Server;
 use App\Models\TrServerUsers;
 use App\Models\User;
@@ -39,10 +40,7 @@ class ServerController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn_edit = '<button class="btn btn-info" onclick="edit('.$row->id.')" type="button"><i class="icon-pencil"></i></button>';
-                    $btn_delete = '<button class="btn btn-danger" onclick="destroy('.$row->id.')" type="button"><i class="icon-trash"></i></button>';
-                    $btn = '<div class="btn-group">'.$btn_edit.$btn_delete.'</div>';
-                    return $btn;
+                    return Helper::actionButtons($row, ['edit', 'delete']);
                 })
                 ->rawColumns(['action'])
                 ->make(true);

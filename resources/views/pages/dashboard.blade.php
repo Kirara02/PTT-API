@@ -1,4 +1,4 @@
-@extends('layouts.default_layout')
+@extends('layouts.default')
 @section('title')
     {{ $title }}
 @endsection
@@ -40,18 +40,19 @@
         }
         let googleTile = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
             maxZoom: 20,
-            subdomains:['mt0','mt1','mt2','mt3'],
-            attribution: ''});
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: ''
+        });
         let osmTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         });
-        let googleTerrain = L.tileLayer('http://{s}.google.com/vt?lyrs=p&x={x}&y={y}&z={z}',{
+        let googleTerrain = L.tileLayer('http://{s}.google.com/vt?lyrs=p&x={x}&y={y}&z={z}', {
             maxZoom: 20,
-            subdomains:['mt0','mt1','mt2','mt3']
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
-        let googleSat = L.tileLayer('http://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}',{
+        let googleSat = L.tileLayer('http://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}', {
             maxZoom: 20,
-            subdomains:['mt0','mt1','mt2','mt3']
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
         var marker = [];
         var baseMaps = {
@@ -70,10 +71,13 @@
             if (map.hasLayer(marker)) {
                 map.removeLayer(marker); // remove
             }
+            console.log(marker);
+
             $.get("{{ route('auth.dashboard.markers') }}", function(res) {
                 $.each(res.data, function(idx, val) {
                     marker = new L.marker([val.position.latitude, val.position.longitude])
-                        .bindPopup(val.name + '<br>' + moment(val.position.created_at).tz(val.code).format('DD MMM YYYY HH:mm z'))
+                        .bindPopup(val.name + '<br>' + moment(val.position.created_at).tz(val.code).format(
+                            'DD MMM YYYY HH:mm z'))
                         .on('click', onClick)
                         .addTo(map);
                 })
@@ -92,8 +96,8 @@
 @endpush
 @section('content')
     <!--**********************************
-                                Content body start
-                            ***********************************-->
+                                    Content body start
+                                ***********************************-->
     <div class="content-body">
 
         <div class="row page-titles mx-0">
@@ -107,38 +111,45 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-3 col-sm-6">
-                    <div class="card gradient-2">
-                        <div class="card-body">
-                            <h3 class="card-title text-white">Total User</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white">{{ $countUser }}</h2>
+                <!-- Material statustic card start -->
+                <div class="col-xl-12 col-md-12">
+                    <div class="card mat-stat-card">
+                        <div class="card-block">
+                            <div class="row align-items-center b-b-default">
+                                <div class="col-sm-4 b-r-default p-b-20 p-t-20">
+                                    <div class="row align-items-center text-center">
+                                        <div class="col-4 p-r-0">
+                                            <i class="far fa-user text-c-purple f-24"></i>
+                                        </div>
+                                        <div class="col-8 p-l-0">
+                                            <h5>{{ $countUser }}</h5>
+                                            <p class="text-muted m-b-0">User</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 b-r-default p-b-20 p-t-20">
+                                    <div class="row align-items-center text-center">
+                                        <div class="col-4 p-r-0">
+                                            <i class="far fa-user text-c-purple f-24"></i>
+                                        </div>
+                                        <div class="col-8 p-l-0">
+                                            <h5>10K</h5>
+                                            <p class="text-muted m-b-0">Visitors</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 b-r-default p-b-20 p-t-20">
+                                    <div class="row align-items-center text-center">
+                                        <div class="col-4 p-r-0">
+                                            <i class="far fa-user text-c-purple f-24"></i>
+                                        </div>
+                                        <div class="col-8 p-l-0">
+                                            <h5>10K</h5>
+                                            <p class="text-muted m-b-0">Visitors</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <span class="float-right display-5 opacity-5"><i class="icon-user-following"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="card gradient-3">
-                        <div class="card-body">
-                            <h3 class="card-title text-white">Employees Absence</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white">122</h2>
-                            </div>
-                            <span class="float-right display-5 opacity-5"><i class="fa fa-user-times"
-                                    aria-hidden="true"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="card gradient-4">
-                        <div class="card-body">
-                            <h3 class="card-title text-white">PTT Server</h3>
-                            <div class="d-inline-block">
-                                <h2 class="text-white">{{ $countServer }}</h2>
-                            </div>
-                            <span class="float-right display-5 opacity-5"><i class="fa fa-microchip"
-                                    aria-hidden="true"></i></span>
                         </div>
                     </div>
                 </div>
@@ -151,11 +162,17 @@
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">User Location</h5>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <h5 class="card-title">User Location</h5>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button class="btn btn-primary float-right" onclick="markersUser()"><i
+                                                    class="fa fa-arrows-rotate"></i> Refresh</button>
+                                        </div>
+                                    </div>
                                     <div id="map" style="height: 500px">
                                         <div class="btn-group float-right" style="z-index: 1001">
-                                            {{-- <button type="buttons" onclick="markersUser()" class="btn btn-primary"><i
-                                                    class="fa fa-arrows-rotate"></i> Refresh</button> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -169,6 +186,6 @@
         <!-- #/ container -->
     </div>
     <!--**********************************
-            Content body end
-        ***********************************-->
+                Content body end
+            ***********************************-->
 @endsection

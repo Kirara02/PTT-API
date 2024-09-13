@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helper;
 use App\Models\User;
 use App\Models\Certificate;
+use App\Models\Level;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -45,6 +47,14 @@ class UserController extends Controller
             ]);
         }
     }
+    private function  __uploadPhoto($file, $exist = false){
+        $fileName = time().'.'.$file->getClientOriginalExtension();
+        $file->move(public_path('dist/profiles/'), $fileName);
+        if ($exist) {
+            unlink(public_path('dist/profiles/') . $exist);
+        }
+        return $fileName;
+    }
     public function index(Request $request)
     {
         if ($request->wantsJson()) {
@@ -52,31 +62,14 @@ class UserController extends Controller
             return DataTables::of($user)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $btn_password =
-                        '<button class="btn btn-warning text-white" onclick="resetPassword(' .
-                        $row->id .
-                        ')" type="button"><i class="icon-key"></i></button>';
-                    $btn_edit =
-                        '<button class="btn btn-info" onclick="edit(' .
-                        $row->id .
-                        ')" type="button"><i class="icon-pencil"></i></button>';
-                    $btn_delete =
-                        '<button class="btn btn-danger" onclick="destroy(' .
-                        $row->id .
-                        ')" type="button"><i class="icon-trash"></i></button>';
-                    $btn =
-                        '<div class="btn-group">' .
-                        $btn_password .
-                        $btn_edit .
-                        $btn_delete .
-                        '</div>';
-                    return $btn;
+                    return Helper::actionButtons($row, ['reset', 'edit', 'delete']);
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         } else {
             $data = [
                 'title' => 'User',
+                'levels' => Level::all()
             ];
             return view('pages.admin.user', $data);
         }
@@ -100,7 +93,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->only(['name', 'email', 'password', 'certificate']);
+        $input = $request->only(['name', 'email', 'level_id', 'password', 'certificate']);
         $this->rules['certificate'] = 'required|file|max:2048';
         $validator = Validator::make($input, $this->rules, [], []);
         if ($validator->fails()) {
@@ -113,6 +106,7 @@ class UserController extends Controller
             );
         } else {
             $input['password'] = Hash::make($request->password);
+            $input['photo'] = $this->__uploadPhoto($request->photo);
             $create = User::create($input);
             if ($create) {
                 if ($request->has('certificate')) {
@@ -211,7 +205,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->only(['name', 'email', 'certificate']);
+        $input = $request->only(['name', 'email', 'certificate', 'level_id']);
         $validator = Validator::make($input, $this->rules, [], []);
         if ($validator->fails()) {
             return response()->json(
@@ -224,6 +218,7 @@ class UserController extends Controller
         } else {
             $data = User::find($id);
             if ($data) {
+                $input['photo'] = $this->__uploadPhoto($request->photo);
                 $data->update($input);
                 if ($request->has('certificate')) {
                     $this->__uploadCertificate(

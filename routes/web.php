@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\LogActivitiesController;
 use App\Http\Controllers\Admin\ServerController;
 use App\Http\Controllers\Admin\UserController;
@@ -31,10 +32,16 @@ Route::middleware('auth')->group(function(){
         //User
         Route::resource('user', UserController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
         Route::put('user/{id}/reset', [UserController::class, 'reset'])->name('user.reset');
+        
         //Server
         Route::resource('server', ServerController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
+
         //Company
         Route::resource('company', CompanyController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
+
+        //Levels
+        Route::resource('level', LevelController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
+
         //Log Activity
         Route::resource('log-activity', LogActivitiesController::class)->only(['index']);
     });

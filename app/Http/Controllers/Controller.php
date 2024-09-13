@@ -21,4 +21,18 @@ class Controller extends BaseController
         LogActivity::create($input);
         return true;
     }
+    public function responseSuccess($message, $msg = 'message')
+    {
+        return response()->json([
+            'status' => 'success',
+            $msg => $message
+        ], 200);
+    }
+    public function responseError($message, $code)
+    {
+        return response()->json([
+            'status' => 'error',
+            'message' => $message
+        ], $code);
+    }
 }
