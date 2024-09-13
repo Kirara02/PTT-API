@@ -27,7 +27,6 @@ class LogActivitiesController extends Controller
                 ->orderBy('log_activities.created_at', 'desc')
                 ->get();
             return DataTables::of($query)
-                ->addIndexColumn()
                 ->editColumn('created_at', function($row){
                     return Carbon::parse(strtotime($row->created_at))->setTimezone($row->code)->isoFormat('DD MMM Y HH:mm z');
                 })

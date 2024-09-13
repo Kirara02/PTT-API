@@ -142,7 +142,6 @@
                                         <table class="table table-striped table-bordered" id="daTable">
                                             <thead>
                                                 <tr>
-                                                    <th>#</th>
                                                     <th>CREATED AT</th>
                                                     <th>NAME</th>
                                                     <th>ACTIVITY</th>
