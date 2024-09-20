@@ -31,7 +31,11 @@ class DatabaseSeeder extends Seeder
         //     "user_id" => 1
         // ]);
         $this->call([
-            TimezoneSeeder::class
+            TimezoneSeeder::class,
+            CompanySeeder::class,
+            UserSeeder::class,
+            CertificateUserSeeder::class,
+            ServerSeeder::class
         ]);
     }
 }
