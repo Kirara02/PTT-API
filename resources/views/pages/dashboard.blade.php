@@ -54,7 +54,6 @@
             maxZoom: 20,
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
-        var marker = [];
         var baseMaps = {
             "OpenStreetMap": osmTile,
             "Google Satellites": googleTile,
@@ -66,26 +65,23 @@
             layers: [osmTile, googleTile]
         });
         var layerControl = L.control.layers(baseMaps).addTo(map);
-
+        var markersLayer = new L.LayerGroup();
         function markersUser() {
-            if (map.hasLayer(marker)) {
-                map.removeLayer(marker); // remove
-            }
-            console.log(marker);
-
+            markersLayer.clearLayers();
+            var markers = [];
             $.get("{{ route('auth.dashboard.markers') }}", function(res) {
                 $.each(res.data, function(idx, val) {
-                    marker = new L.marker([val.position.latitude, val.position.longitude])
+                    markers = new L.marker([val.position.latitude, val.position.longitude])
                         .bindPopup(val.name + '<br>' + moment(val.position.created_at).tz(val.code).format(
                             'DD MMM YYYY HH:mm z'))
-                        .on('click', onClick)
-                        .addTo(map);
+                        .on('click', onClick);
+                    markersLayer.addLayer(markers);
                 })
-
                 function onClick(e) {
                     var popup = e.target.getPopup();
                     var content = popup.getContent();
                 }
+                markersLayer.addTo(map);
             })
         }
 
