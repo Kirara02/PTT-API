@@ -103,15 +103,14 @@
                     extend: 'print',
                     className: 'btn-sm btn-info',
                     text: '<i class="fas fa-sync"></i> Refresh',
-                    action: function(){
+                    action: function() {
                         reload();
                     }
                 }
             ]
         });
 
-        function reload()
-        {
+        function reload() {
             Table.ajax.reload(null, false);
         }
 
@@ -132,7 +131,7 @@
             $.get(editUrl, function(res) {
                 $('.modal-header h5').html("Edit Company");
                 let users = [];
-                $.each(res.data.tr_users, function(idx, item){
+                $.each(res.data.tr_users, function(idx, item) {
                     users.push(item.user_id);
                 })
                 $('#Users').selectpicker('val', users);
@@ -246,8 +245,8 @@
 @endpush
 @section('content')
     <!--**********************************
-                                    Content body start
-                                ***********************************-->
+                                        Content body start
+                                    ***********************************-->
     <div class="content-body">
 
         <div class="container-fluid">
@@ -258,9 +257,8 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Company Table</h5>
-                                    <div class="float-right">
-                                        @include('includes.components.create-buttons')
-                                    </div>
+                                    <button class="btn btn-primary float-right" onclick="create()"><i
+                                            class="icon-plus mr-1"></i> {{ $title }}</button>
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered" id="daTable">
                                             <thead>
@@ -287,8 +285,8 @@
         <!-- #/ container -->
     </div>
     <!--**********************************
-            Content body end
-        ***********************************-->
+                Content body end
+            ***********************************-->
     <!-- Modal -->
     <div class="modal fade" id="basicModal">
         <div class="modal-dialog modal-lg" role="document">
@@ -309,7 +307,7 @@
                                 <label for="Timezone">Timezone*</label>
                                 <select name="timezone_id" id="Timezone" class="form-control" required>
                                     @foreach ($timezones as $item)
-                                        <option value="{{ $item->id }}">{{ $item->code.' | '.$item->name }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->code . ' | ' . $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -317,7 +315,8 @@
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="ExpireDate">Expire Date*</label>
-                                <input type="date" id="ExpireDate" class="form-control" name="expire_date" placeholder="Expire Date">
+                                <input type="date" id="ExpireDate" class="form-control" name="expire_date"
+                                    placeholder="Expire Date">
                             </div>
                             <div class="col-md-6">
                                 <label for="Users">Users</label>
