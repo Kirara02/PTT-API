@@ -106,7 +106,9 @@ class UserController extends Controller
             );
         } else {
             $input['password'] = Hash::make($request->password);
-            $input['photo'] = $this->__uploadPhoto($request->photo);
+            if ($request->has('photo')) {
+                $input['photo'] = $this->__uploadPhoto($request->photo);
+            }
             $create = User::create($input);
             if ($create) {
                 if ($request->has('certificate')) {
