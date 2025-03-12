@@ -17,7 +17,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'email', 'password', 'position_id', 'level_id', 'photo'];
+    protected $fillable = ['name', 'email', 'password', 'position_id', 'level_id', 'photo', 'company_id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public function servers()
     {
-        return $this->hasMany(TrServerUsers::class);
+        return $this->hasMany(ServerCompany::class, 'company_id', 'company_id');
     }
 
     public function certificate()
@@ -54,10 +54,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Position::class, 'id', 'user_id');
     }
-
     public function company()
     {
-        return $this->belongsTo(TrCompanyUsers::class, 'id', 'user_id');
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function level()

@@ -19,16 +19,22 @@ class LogActivitiesController extends Controller
     public function index(Request $request)
     {
         if ($request->wantsJson()) {
-            $query = LogActivity::select('log_activities.*', 'users.name', 'tz.code')
-                ->join('users', 'users.id', '=', 'log_activities.user_id')
-                ->join('tr_company_users as tcu', 'tcu.user_id', '=', 'log_activities.user_id')
-                ->join('companies as co', 'co.id', '=', 'tcu.company_id')
-                ->join('timezones as tz', 'tz.id', '=', 'co.timezone_id')
-                ->orderBy('log_activities.created_at', 'desc')
-                ->get();
+            $query = LogActivity::with('user.company.timezone')
+                ->whereHas('user.company', function($query){
+                    $query->when(Auth::user()->level_id != 0, function($query){
+                        $query->where('company_id', Auth::user()->company_id);
+                    });
+                })
+                ->latest();
             return DataTables::of($query)
+                ->addColumn('name', function($row){
+                    return $row->user?$row->user->name:'UNKNOWN';
+                })
+                ->addColumn('company', function($row){
+                    return $row->user?$row->user->company->name:'UNKNOWN';
+                })
                 ->editColumn('created_at', function($row){
-                    return Carbon::parse(strtotime($row->created_at))->setTimezone($row->code)->isoFormat('DD MMM Y HH:mm z');
+                    return Carbon::parse(strtotime($row->created_at))->setTimezone($row->user->company->timezone->code)->isoFormat('DD MMM Y HH:mm z');
                 })
                 ->make(true);
         } else {

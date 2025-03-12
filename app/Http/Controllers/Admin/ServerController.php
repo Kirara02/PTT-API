@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helper;
+use App\Models\Company;
 use App\Models\Server;
+use App\Models\ServerCompany;
 use App\Models\TrServerUsers;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,19 +20,19 @@ class ServerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    private function __insertUsers($users, $server_id)
+    private function __insertCompanies($companies, $server_id, $update = false)
     {
         $result = [];
-        foreach ($users as $idx => $row) {
+        foreach ($companies as $idx => $row) {
             $result[] = [
                 'server_id' => $server_id,
-                'user_id' => $row
+                'company_id' => $row
             ];
         }
-        if (TrServerUsers::where('server_id', $server_id)->get()) {
-            TrServerUsers::where('server_id', $server_id)->delete();
+        if ($update) {
+            ServerCompany::where('server_id', $server_id)->delete();
         }
-        TrServerUsers::insert($result);
+        ServerCompany::insert($result);
         return true;
     }
     public function index(Request $request)
@@ -47,6 +49,7 @@ class ServerController extends Controller
         } else {
             $data = [
                 'title' => 'Server List | PTT UniGuard',
+                'companies' => Company::all(),
                 'users' => User::all()
             ];
             return view('pages.admin.server', $data);
@@ -88,7 +91,7 @@ class ServerController extends Controller
             }
             $create = Server::create($input);
             if ($create) {
-                $this->__insertUsers($request->users, $create->id);
+                $this->__insertCompanies($request->companies, $create->id);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Server create successfully',
@@ -121,7 +124,7 @@ class ServerController extends Controller
      */
     public function edit($id)
     {
-        $data = Server::with('users')->find($id);
+        $data = Server::with('companies')->find($id);
         if ($data) {
             return response()->json([
                 'status' => 'success',
@@ -164,7 +167,7 @@ class ServerController extends Controller
             }
             if ($data) {
                 $data->update($input);
-                $this->__insertUsers($request->users, $id);
+                $this->__insertCompanies($request->companies, $id, true);
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Server updated successfully',

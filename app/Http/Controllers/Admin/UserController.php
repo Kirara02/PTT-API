@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use App\Models\Company;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -23,6 +25,9 @@ class UserController extends Controller
     protected $rules = [
         'name' => 'required',
         'email' => 'email|required',
+        'company_id' => 'required',
+        'level_id' => 'required',
+
     ];
     private function __uploadCertificate($file, $user_id)
     {
@@ -47,6 +52,18 @@ class UserController extends Controller
             ]);
         }
     }
+    private function __insertCertificate($user_id)
+    {
+        if (in_array(Auth::user()->company_id, [1,2])) {
+            $cert = 'certificates/ptt.device.p12';
+        } else {
+            $cert = 'certificates/clientgroup.p12';
+        }
+        Certificate::create([
+            'user_id' => $user_id,
+            'certificate_path' => $cert,
+        ]);
+    }
     private function  __uploadPhoto($file, $exist = false){
         $fileName = time().'.'.$file->getClientOriginalExtension();
         $file->move(public_path('dist/profiles/'), $fileName);
@@ -55,12 +72,30 @@ class UserController extends Controller
         }
         return $fileName;
     }
+    private function getTimezoneCode()
+    {
+        return Auth::user()->company?Auth::user()->company->timezone->code:'UTC';
+    }
     public function index(Request $request)
     {
         if ($request->wantsJson()) {
-            $user = User::all();
+            $user = User::with('company', 'level')
+                ->when(Auth::user()->level_id != 0, function($q){
+                    $q->where('company_id', Auth::user()->company_id);
+                })
+                ->latest()
+                ->get();
             return DataTables::of($user)
                 ->addIndexColumn()
+                ->editColumn('created_at', function($row){
+                    return Carbon::parse(strtotime($row->created_at))->setTimezone($this->getTimezoneCode())->isoFormat('DD MMM Y HH:mm z');
+                })
+                ->editColumn('company', function ($row) {
+                    return $row->company?$row->company->name:'UNKNOWN';
+                })
+                ->editColumn('level', function ($row) {
+                    return $row->level?$row->level->name:'UNKNOWN';
+                })
                 ->addColumn('action', function ($row) {
                     return Helper::actionButtons($row, ['reset', 'edit', 'delete']);
                 })
@@ -69,7 +104,12 @@ class UserController extends Controller
         } else {
             $data = [
                 'title' => 'User',
-                'levels' => Level::all()
+                'levels' => Level::when(Auth::user()->level_id != 0, function($q){
+                    $q->where('id', '<>', 1);
+                })->get(),
+                'companies' => Company::when(Auth::user()->level_id != 0, function($q){
+                    $q->where('id', Auth::user()->company_id);
+                })->get(),
             ];
             return view('pages.admin.user', $data);
         }
@@ -93,8 +133,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->only(['name', 'email', 'level_id', 'password', 'certificate']);
-        $this->rules['certificate'] = 'required|file|max:2048';
+        $input = $request->only(['company_id', 'name', 'email', 'level_id', 'password', 'certificate']);
+        $this->rules['password'] = 'required';
         $validator = Validator::make($input, $this->rules, [], []);
         if ($validator->fails()) {
             return response()->json(
@@ -111,12 +151,7 @@ class UserController extends Controller
             }
             $create = User::create($input);
             if ($create) {
-                if ($request->has('certificate')) {
-                    $this->__uploadCertificate(
-                        $request->file('certificate'),
-                        $create->id
-                    );
-                }
+                $this->__insertCertificate($create->id);
                 return response()->json(
                     [
                         'status' => 'success',
@@ -207,7 +242,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->only(['name', 'email', 'certificate', 'level_id']);
+        $input = $request->only(['company_id', 'name', 'email', 'certificate', 'level_id']);
         $validator = Validator::make($input, $this->rules, [], []);
         if ($validator->fails()) {
             return response()->json(
@@ -220,14 +255,10 @@ class UserController extends Controller
         } else {
             $data = User::find($id);
             if ($data) {
-                $input['photo'] = $this->__uploadPhoto($request->photo);
-                $data->update($input);
-                if ($request->has('certificate')) {
-                    $this->__uploadCertificate(
-                        $request->file('certificate'),
-                        $id
-                    );
+                if ($request->has('photo')) {
+                    $input['photo'] = $this->__uploadPhoto($request->photo);
                 }
+                $data->update($input);
                 return response()->json(
                     [
                         'status' => 'success',

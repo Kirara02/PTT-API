@@ -33,8 +33,8 @@ class Server extends Model
         ];
     }
 
-    public function users()
+    public function companies()
     {
-        return $this->hasMany(TrServerUsers::class);
+        return $this->belongsToMany(Company::class, 'server_companies', 'server_id', 'company_id');
     }
 }

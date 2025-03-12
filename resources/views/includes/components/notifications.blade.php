@@ -10,7 +10,7 @@
         </li>
         <li class="waves-effect waves-light">
             <div class="media">
-                <img class="d-flex align-self-center img-radius" src="assets/images/avatar-2.jpg"
+                <img class="d-flex align-self-center img-radius" src="{{ asset('assets/images/avatar-2.jpg') }}"
                     alt="Generic placeholder image">
                 <div class="media-body">
                     <h5 class="notification-user">John Doe</h5>
@@ -21,7 +21,7 @@
         </li>
         <li class="waves-effect waves-light">
             <div class="media">
-                <img class="d-flex align-self-center img-radius" src="assets/images/avatar-4.jpg"
+                <img class="d-flex align-self-center img-radius" src="{{ asset('assets/images/avatar-3.jpg') }}"
                     alt="Generic placeholder image">
                 <div class="media-body">
                     <h5 class="notification-user">Joseph William</h5>
@@ -32,7 +32,7 @@
         </li>
         <li class="waves-effect waves-light">
             <div class="media">
-                <img class="d-flex align-self-center img-radius" src="assets/images/avatar-3.jpg"
+                <img class="d-flex align-self-center img-radius" src="{{ asset('assets/images/avatar-4.jpg') }}"
                     alt="Generic placeholder image">
                 <div class="media-body">
                     <h5 class="notification-user">Sara Soudein</h5>

@@ -47,6 +47,9 @@
                     data: 'created_at'
                 },
                 {
+                    data: 'company'
+                },
+                {
                     data: 'name'
                 },
                 {
@@ -144,6 +147,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>CREATED AT</th>
+                                                    <th>COMPANY</th>
                                                     <th>NAME</th>
                                                     <th>ACTIVITY</th>
                                                     <th>ATTACHMENT</th>

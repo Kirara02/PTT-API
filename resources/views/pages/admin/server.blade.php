@@ -133,11 +133,11 @@
             $('.modal-body form').append('<input type="hidden" name="_method" value="PUT" />');
             $.get(editUrl, function(res) {
                 $('.modal-header h5').html("Edit Server");
-                let users = [];
-                $.each(res.data.users, function(idx, item) {
-                    users.push(item.user_id);
+                let companies = [];
+                $.each(res.data.companies, function(idx, item) {
+                    companies.push(item.id);
                 })
-                $('#Users').selectpicker('val', users);
+                $('#Companies').selectpicker('val', companies);
                 $('input[name="name"]').val(res.data.name);
                 $('input[name="username"]').val(res.data.username);
                 $('input[name="host"]').val(res.data.host);
@@ -207,22 +207,22 @@
             let type = $(that).closest('.input-group').find('input');
             if (type.attr('type') == 'password') {
                 type.attr('type', 'text');
-                $(that).html('<i class="fa-regular fa-eye"></i>');
+                $(that).html('<i class="fas fa-eye"></i>');
             } else {
                 type.attr('type', 'password');
-                $(that).html('<i class="fa-regular fa-eye-slash"></i>');
+                $(that).html('<i class="fas fa-eye-slash"></i>');
             }
         }
         $(document).ready(function() {
             $('#basicModal').on('hide.bs.modal', function() {
                 $('.modal-body form')[0].reset();
-                $('#Users').selectpicker('val', '');
+                $('#Companies').selectpicker('val', '');
                 $('input[name="_method"]').remove();
             })
-            $('#Users').selectpicker({
+            $('#Companies').selectpicker({
                 liveSearch: true,
-                header: "Select Users",
-                title: "Select Users",
+                header: "Select Companies",
+                title: "Select Companies",
             });
             $('#FormServer').on('submit', function(e) {
                 e.preventDefault();
@@ -268,8 +268,8 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Server Table</h5>
-                                    <button class="btn btn-primary float-right" onclick="create()"><i
-                                            class="icon-plus mr-1"></i> Server</button>
+                                    <button class="btn btn-sm btn-primary float-right" onclick="create()"><i
+                                            class="fas fa-plus me-1"></i> Server</button>
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered" id="daTable">
                                             <thead>
@@ -339,14 +339,14 @@
                                         placeholder="******">
                                     <div class="input-group-append">
                                         <button onclick="showPassword(this)" class="btn btn-outline-dark" type="button"><i
-                                                class="fa-regular fa-eye-slash"></i></button>
+                                                class="fas fa-eye"></i></button>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="Users">Users</label>
-                                <select name="users[]" id="Users" class="form-control" multiple required>
-                                    @foreach ($users as $item)
+                                <label for="Companies">Companies*</label>
+                                <select name="companies[]" id="Companies" class="form-control" multiple required>
+                                    @foreach ($companies as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>

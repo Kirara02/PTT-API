@@ -8,9 +8,9 @@ use App\Models\Company;
 use App\Models\Timezone;
 use App\Models\TrCompanyUsers;
 use App\Models\User;
-use DateTime;
-use DateTimeZone;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
@@ -21,27 +21,19 @@ class CompanyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    private function __insertUsers($users, $company_id)
+    private function getTimezoneCode()
     {
-        $result = [];
-        foreach ($users as $idx => $row) {
-            $result[] = [
-                'company_id' => $company_id,
-                'user_id' => $row,
-            ];
-        }
-        if (TrCompanyUsers::where('company_id', $company_id)->get()) {
-            TrCompanyUsers::where('company_id', $company_id)->delete();
-        }
-        TrCompanyUsers::insert($result);
-        return true;
+        return Auth::user()->company?Auth::user()->company->timezone->code:'UTC';
     }
     public function index(Request $request)
     {
         if ($request->wantsJson()) {
-            $data = Company::with('timezone')->get();
+            $data = Company::with('timezone')->latest()->get();
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->editColumn('created_at', function($row){
+                    return Carbon::parse(strtotime($row->created_at))->setTimezone($this->getTimezoneCode())->isoFormat('DD MMM Y HH:mm z');
+                })
                 ->editColumn('timezone', function ($row) {
                     return $row->timezone->code;
                 })
@@ -53,8 +45,7 @@ class CompanyController extends Controller
         } else {
             $data = [
                 'title' => 'Company',
-                'timezones' => Timezone::all(),
-                'users' => User::all(),
+                'timezones' => Timezone::all()
             ];
             return view('pages.admin.company', $data);
         }
@@ -80,6 +71,7 @@ class CompanyController extends Controller
     {
         $input = $request->only([
             'name',
+            'email',
             'expire_date',
             'timezone_id',
             'created_by',
@@ -103,7 +95,6 @@ class CompanyController extends Controller
         } else {
             $create = Company::create($input);
             if ($create) {
-                $this->__insertUsers($request->users, $create->id);
                 return $this->responseSuccess('Company created Successfully');
             } else {
                 return $this->responseError('Internal server Error', 500);
@@ -149,13 +140,14 @@ class CompanyController extends Controller
     {
         $input = $request->only([
             'name',
+            'email',
             'expire_date',
             'updated_by',
             'timezone_id',
         ]);
         $validator = Validator::make(
             $input,
-            Company::rules(),
+            Company::rules($id),
             [],
             Company::attributes()
         );
@@ -172,7 +164,6 @@ class CompanyController extends Controller
             $data = Company::find($id);
             if ($data) {
                 $data->update($input);
-                $this->__insertUsers($request->users, $id);
                 return $this->responseSuccess('Company updated Successfully');
             } else {
                 return $this->responseError('Data not Exist', 404);

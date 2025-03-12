@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('levels', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 64);
+            $table->string('menu', 255);
             $table->timestamps();
         });
     }

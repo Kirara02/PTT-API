@@ -9,16 +9,25 @@ class Company extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    public static function rules()
+    public static function rules($id = false)
     {
-        return [
-            'name' => 'required|max:128'
-        ];
+        if ($id) {
+            return [
+                'name' => 'required|max:128',
+                'email' => 'required|email|max:128|unique:companies,email,' . $id,
+            ];
+        } else {
+            return [
+                'name' => 'required|max:128',
+                'email' => 'required|email|max:128|unique:companies,email',
+            ];
+        }
     }
     public static function attributes()
     {
         return [
-            'name' => 'Name'
+            'name' => 'Name',
+            'email' => 'Email'
         ];
     }
     public function tr_users()

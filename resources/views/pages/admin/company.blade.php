@@ -54,7 +54,13 @@
                     data: 'DT_RowIndex'
                 },
                 {
+                    data: 'created_at'
+                },
+                {
                     data: 'name'
+                },
+                {
+                    data: 'email'
                 },
                 {
                     data: 'timezone'
@@ -66,7 +72,7 @@
                     data: 'action'
                 }
             ],
-            dom: '<"row"<"col-sm-3"l><"col-sm-6">B<"col-sm-3"fr>>t<"row"<"col-sm-5"i><"col-sm-7"p>>',
+            dom: '<"row"<"col-sm-3"l><"col-sm-6"B><"col-sm-3"fr>>t<"row"<"col-sm-5"i><"col-sm-7"p>>',
             buttons: [{
                     extend: 'copy',
                     className: 'btn-sm btn-info',
@@ -136,6 +142,7 @@
                 })
                 $('#Users').selectpicker('val', users);
                 $('input[name="name"]').val(res.data.name);
+                $('input[name="email"]').val(res.data.email);
                 $('input[name="expire_date"]').val(res.data.expire_date);
                 $('#Timezone').selectpicker('val', res.data.timezone_id);
                 $('#basicModal').modal('show');
@@ -257,16 +264,18 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Company Table</h5>
-                                    <button class="btn btn-primary float-right" onclick="create()"><i
-                                            class="icon-plus mr-1"></i> {{ $title }}</button>
+                                    <button class="btn btn-sm btn-primary float-right" onclick="create()"><i
+                                            class="fas fa-plus me-1"></i> {{ $title }}</button>
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered" id="daTable">
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
+                                                    <th>CREATED AT</th>
                                                     <th>NAME</th>
-                                                    <th>TIMEZONE</th>
+                                                    <th>EMAIL</th>
                                                     <th>EXPIRE DATE</th>
+                                                    <th>TIMEZONE</th>
                                                     <th>ACTION</th>
                                                 </tr>
                                             </thead>
@@ -301,15 +310,11 @@
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="Name">Name*</label>
-                                <input type="text" id="Name" class="form-control" name="name" placeholder="Name">
+                                <input type="text" id="Name" class="form-control" name="name" placeholder="Company Name" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="Timezone">Timezone*</label>
-                                <select name="timezone_id" id="Timezone" class="form-control" required>
-                                    @foreach ($timezones as $item)
-                                        <option value="{{ $item->id }}">{{ $item->code . ' | ' . $item->name }}</option>
-                                    @endforeach
-                                </select>
+                                <label for="Email" class="col-form-label">Email*</label>
+                                <input type="email" id="Email" name="email" class="form-control" placeholder="Email@company.com" required>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -319,10 +324,10 @@
                                     placeholder="Expire Date">
                             </div>
                             <div class="col-md-6">
-                                <label for="Users">Users</label>
-                                <select name="users[]" id="Users" class="form-control" multiple required>
-                                    @foreach ($users as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                <label for="Timezone">Timezone*</label>
+                                <select name="timezone_id" id="Timezone" class="form-control" required>
+                                    @foreach ($timezones as $item)
+                                        <option value="{{ $item->id }}">{{ $item->code . ' | ' . $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

@@ -54,6 +54,15 @@
                     data: 'DT_RowIndex'
                 },
                 {
+                    data: 'created_at'
+                },
+                {
+                    data: 'company'
+                },
+                {
+                    data: 'level'
+                },
+                {
                     data: 'name'
                 },
                 {
@@ -137,6 +146,7 @@
                 $('input[name="name"]').val(res.data.name);
                 $('input[name="email"]').val(res.data.email);
                 $('select[name="level_id"]').selectpicker('val', res.data.level_id);
+                $('select[name="company_id"]').selectpicker('val', res.data.company_id);
                 $('#preview').attr('src', "{{ asset('dist/profiles') }}"+'/'+res.data.photo);
                 $('#basicModal').modal('show');
             })
@@ -223,12 +233,18 @@
                 $('#preview').attr('src', "{{ asset('dist/profiles/default.jpg') }}");
                 $('.password').css('display', 'block');
                 $('.password').find('input').prop('required', true);
+                $('#Company, #Level').selectpicker('val', '');
                 $('input[name="_method"]').remove();
             })
             $('#Level').selectpicker({
                 liveSearch: true,
                 header: "Select Level",
                 title: "Select Level",
+            });
+            $('#Company').selectpicker({
+                liveSearch: true,
+                header: "Select Company",
+                title: "Select Company",
             });
             $('#ProfilePhoto').change(function() {
                 const file = this.files[0];
@@ -313,6 +329,9 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
+                                                    <th>CREATED AT</th>
+                                                    <th>COMPANY</th>
+                                                    <th>LEVEL</th>
                                                     <th>NAME</th>
                                                     <th>EMAIL</th>
                                                     <th>ACTION</th>
@@ -348,6 +367,24 @@
                     <form id="FormAccount" action="" method="post" enctype="multipart/form-data">
                         <div class="form-group row">
                             <div class="col-md-6">
+                                <label for="Company" class="col-form-label">Company*</label>
+                                <select name="company_id" id="Company" class="form-control">
+                                    @foreach ($companies as $item)
+                                        <option value="{{ $item->id }}" {{ Auth::user()->level_id != 0?'selected':'' }}>{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Level" class="col-form-label">Level*</label>
+                                <select name="level_id" id="Level" class="form-control">
+                                    @foreach ($levels as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
                                 <label for="Name">Name*</label>
                                 <input type="text" id="Name" class="form-control" name="name" placeholder="Name"
                                     required>
@@ -360,14 +397,6 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
-                                <label for="Level" class="col-form-label">Level*</label>
-                                <select name="level_id" id="Level" class="form-control">
-                                    @foreach ($levels as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-6">
                                 <label for="ProfilePhoto">Photo Profile</label>
                                 <div class="input-group">
                                     <div class="custom-file">
@@ -376,10 +405,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="password">
-                            <div class="form-group row">
-                                <div class="col-md-6">
+                            <div class="col-md-6">
+                                <div class="password">
                                     <label for="Password">Password*</label>
                                     <div class="input-group mb-3">
                                         <input type="password" id="Password" class="form-control" name="password"
@@ -387,15 +414,6 @@
                                         <div class="input-group-append">
                                             <button onclick="showPassword(this)" class="btn btn-outline-dark" type="button"><i
                                                     class="ti-eye"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="Certificate">Certificate User*</label>
-                                    <div class="input-group">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="certificate" id="Certificate">
-                                            <label class="custom-file-label">Upload Certificate</label>
                                         </div>
                                     </div>
                                 </div>

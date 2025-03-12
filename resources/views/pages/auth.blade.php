@@ -93,13 +93,13 @@
                                           </div>
                                       </div>
                                       <div class="alert-wrapper"></div>
-                                      <div class="form-group form-primary">
-                                          <input type="text" name="email" class="form-control">
+                                      <div class="form-group form-default form-static-label">
+                                          <input type="text" name="email" class="form-control" placeholder="example@email.com">
                                           <span class="form-bar"></span>
                                           <label class="float-label">Your Email Address</label>
                                       </div>
-                                      <div class="form-group form-primary">
-                                          <input type="password" name="password" class="form-control">
+                                      <div class="form-group form-default form-static-label">
+                                          <input type="password" name="password" class="form-control" placeholder="Type your password">
                                           <span class="form-bar"></span>
                                           <label class="float-label">Password</label>
                                       </div>

@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name', 128);
+            $table->string('email', 128)->unique();
             $table->date('expire_date');
             $table->string('created_by', 128);
             $table->string('updated_by', 128);

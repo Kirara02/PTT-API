@@ -97,15 +97,14 @@
                     extend: 'print',
                     className: 'btn-sm btn-info',
                     text: '<i class="fas fa-sync"></i> Refresh',
-                    action: function(){
+                    action: function() {
                         reload();
                     }
                 }
             ]
         });
 
-        function reload()
-        {
+        function reload() {
             Table.ajax.reload(null, false);
         }
 
@@ -126,6 +125,7 @@
             $.get(editUrl, function(res) {
                 $('.modal-header h5').html("Edit {{ $title }}");
                 $('input[name="name"]').val(res.data.name);
+                $('#Menu').selectpicker('val', res.data.menu?res.data.menu.split(','):'');
                 $('#basicModal').modal('show');
             })
         }
@@ -190,6 +190,11 @@
                 $('.modal-body form')[0].reset();
                 $('input[name="_method"]').remove();
             })
+            $('#Menu').selectpicker({
+                liveSearch: true,
+                header: "Select Menu",
+                title: "Select Menu",
+            });
             $('#FormLevel').on('submit', function(e) {
                 e.preventDefault();
                 let formData = new FormData($(this)[0]);
@@ -223,8 +228,8 @@
 @endpush
 @section('content')
     <!--**********************************
-                                    Content body start
-                                ***********************************-->
+                                        Content body start
+                                    ***********************************-->
     <div class="content-body">
 
         <div class="container-fluid">
@@ -261,8 +266,8 @@
         <!-- #/ container -->
     </div>
     <!--**********************************
-            Content body end
-        ***********************************-->
+                Content body end
+            ***********************************-->
     <!-- Modal -->
     <div class="modal fade" id="basicModal">
         <div class="modal-dialog" role="document">
@@ -277,6 +282,14 @@
                         <div class="form-group">
                             <label for="Name">Name*</label>
                             <input type="text" id="Name" class="form-control" name="name" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="Menu" class="col-form-label">Menu*</label>
+                            <select name="menu[]" id="Menu" class="form-control" multiple>
+                                @foreach (collect(config('sidebar.menu'))->where('title', '<>','Master Data')->all() as $item)
+                                    <option value="{{ $item['title'] }}">{{ $item['title'] }}</option>
+                                @endforeach
+                            </select>
                         </div>
                 </div>
                 <div class="modal-footer">

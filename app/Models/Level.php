@@ -12,14 +12,16 @@ class Level extends Model
     public static function rules()
     {
         return [
-            'name' => 'required|max:64'
+            'name' => 'required|max:64',
+            'menu' => 'required'
         ];
     }
 
     public static function attributes()
     {
         return [
-            'name' => 'Name'
+            'name' => 'Name',
+            'menu' => 'Menu'
         ];
     }
 }

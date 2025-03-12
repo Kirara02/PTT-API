@@ -52,11 +52,12 @@ class LevelController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->only(['name']);
+        $input = $request->only(['name', 'menu']);
         $validator = Validator::make($input, Level::rules(), [], Level::attributes());
         if ($validator->fails()) {
             $this->responseError($validator->errors(), 400);
         } else {
+            $input['menu'] = implode(',', $request->menu);
             $create = Level::create($input);
             if ($create) {
                 return $this->responseSuccess('Level created Successfully');
@@ -102,13 +103,14 @@ class LevelController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->only(['name']);
+        $input = $request->only(['name', 'menu']);
         $validator = Validator::make($input, Level::rules(), [], Level::attributes());
         if ($validator->fails()) {
             $this->responseError($validator->errors(), 400);
         } else {
             $data = Level::find($id);
             if ($data) {
+                $input['menu'] = implode(',', $request->menu);
                 $data->update($input);
                 return $this->responseSuccess('Level updated Successfully');
             } else {
