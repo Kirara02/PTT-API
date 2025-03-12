@@ -22,8 +22,7 @@ class DashboardController extends Controller
     public function markersUser()
     {
         $data = User::select('users.*', 'tz.code')
-            ->join('tr_company_users as tcu', 'users.id', '=', 'tcu.user_id')
-            ->join('companies as co', 'co.id', '=', 'tcu.company_id')
+            ->join('companies as co', 'co.id', '=', 'users.company_id')
             ->join('timezones as tz', 'tz.id', '=', 'co.timezone_id')
             ->has('position')
             ->with('position')
