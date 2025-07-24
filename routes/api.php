@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\LogActivitiesController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CertificateController;
+use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\PositionController;
 use App\Http\Controllers\API\ServerController;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::middleware('auth.basic.custom')->group(function () {
+    Route::get('/companies', [CompanyController::class, 'index']);
+    // Add other routes that require basic authentication here
+});
 
 Route::prefix('auth')->group(function() {
     Route::post('/register', [AuthController::class, 'register']);
